@@ -19,7 +19,7 @@ namespace AshTech.Core
 
         public override void LoadContent()
         {
-            font = Content.Load<SpriteFont>("ashTech/pixellocale");
+            font = Content.Load<SpriteFont>("ashTech/m6x11");
             Input.AddAction(new InputAction("testUp", "Test Pattern Move Up", Keys.Up, Keys.W ));
             Input.AddAction(new InputAction("testDown", "Test Pattern Move Down", Keys.Down, Keys.S ));
             Input.AddAction(new InputAction("testLeft", "Test Pattern Move Left", Keys.Left, Keys.A ));
@@ -80,7 +80,7 @@ namespace AshTech.Core
             {
                 Vector2 stringSize = font.MeasureString("AshTech Engine");
                 Vector2 stringOrigin = new Vector2(stringSize.X / 2, stringSize.Y / 2);
-                SpriteBatch.DrawString(font, "AshTech Engine!", fontPosition, Color.HotPink, 0, origin: stringOrigin, 1, SpriteEffects.None, 1);
+                SpriteBatch.DrawString(font, "AshTech Engine!", fontPosition, Color.HotPink, 0, stringOrigin, 1, SpriteEffects.None, 1);
             }
             else
             {

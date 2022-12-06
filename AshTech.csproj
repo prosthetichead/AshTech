@@ -3,6 +3,7 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Content\ashTech\AshTechConsole.aseprite" />
     <None Remove="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>

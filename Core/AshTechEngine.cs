@@ -1,9 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using AshTech.Debug;
 
 namespace AshTech.Core
 {
@@ -12,6 +11,9 @@ namespace AshTech.Core
         
         public InputManager Input { get { return input; } }
         private InputManager input;
+
+        public Console Console { get { return console; } }
+        private Console console;
 
         public GraphicsDeviceManager Graphics { get { return _graphics; } }
         private GraphicsDeviceManager _graphics;
@@ -29,8 +31,7 @@ namespace AshTech.Core
             _graphics = graphics;
             input = new InputManager();
 
-            //Add the default AshTech input actions.
-            input.AddAction(new InputAction("AshTechConsoleToggle", "Debug Console", new Keys[] { Keys.OemTilde }) {hiddenAction=true});            
+            console = new Console();      
         }
 
         public void AddScene(Scene scene)
@@ -57,7 +58,8 @@ namespace AshTech.Core
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             //load the engine assets
-            
+            console.LoadContent(Game.Content, Game);
+            input.AddAction(new InputAction("AshTechConsoleToggle", "Debug Console", new Keys[] { Keys.OemTilde }) { hiddenAction = true });
         }
 
         protected override void UnloadContent()
@@ -67,17 +69,27 @@ namespace AshTech.Core
 
         public override void Update(GameTime gameTime)
         {
-            if(scenes.Count == 0)
+            //update the inputs
+            input.Update();
+
+            //update the console
+            console.Update();
+            
+            //check if we have no scenes? if we have none then insert the test pattern
+            if (scenes.Count == 0)
             {
                 //we have no scenes? then setup the testPattern
                 SceneTestPattern testPattern = new SceneTestPattern();
                 AddScene(testPattern);
             }
 
-
-            //update the inputs
-            input.Update();
-
+            //check if the conosle button is pressed
+            if (input.IsActionTriggered("AshTechConsoleToggle"))
+            {
+                System.Diagnostics.Debug.WriteLine("console");
+                console.displayConsole = !console.displayConsole;
+            }
+         
             //add all the scenes in our update list 
             scenesToUpdate.Clear();
             foreach (Scene scene in scenes)
@@ -136,10 +148,8 @@ namespace AshTech.Core
                     }
                 }
             }
-            else //no scenes? so display the engine test pattern 
-            {
 
-            }
+            console.Draw(SpriteBatch);
         }
 
     }
