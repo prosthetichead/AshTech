@@ -1,35 +1,25 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 
 namespace AshTech.Core
 {
     public class SpriteSheet
     {
         private Texture2D texture;
-        public int singleSpriteWidth;
-        public int singleSpriteHeight;
-        /// <summary>
-        /// which sprite on the sheet to draw defaults to 0
-        /// </summary>
-        public int spriteNumber = 0;
-
-        public SpriteSheet(int singleSpriteWidth, int singleSpriteHeight)
+        private int singleSpriteWidth;
+        private int singleSpriteHeight;
+                        
+        public SpriteSheet(int singleSpriteWidth, int singleSpriteHeight, Texture2D texture)
         {
             this.singleSpriteWidth = singleSpriteWidth;
             this.singleSpriteHeight = singleSpriteHeight;
-        }
-
-        public void LoadTexture(ContentManager content, string textureName)
-        {
-            texture = content.Load<Texture2D>(textureName);
-        }
-
-        public void SetTexture(Texture2D texture)
-        {
             this.texture = texture;
         }
-
+                
         private Rectangle GetSourceRectangle(int spriteNumber)
         {
             int rectangleX = spriteNumber % (texture.Width / singleSpriteWidth);
@@ -38,14 +28,19 @@ namespace AshTech.Core
             return new Rectangle(rectangleX * singleSpriteWidth, rectangleY * singleSpriteHeight, singleSpriteWidth, singleSpriteWidth);
         }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 position, Vector2 origin, float depth, Color color, SpriteEffects spriteEffect)
+        public void Draw(SpriteBatch spriteBatch, int frameNumber, Vector2 position, Color color, float rotation, Vector2 origin, SpriteEffects spriteEffect, float depth)
         {
-            spriteBatch.Draw(texture, new Rectangle((int)position.X, (int)position.Y, singleSpriteWidth, singleSpriteHeight), GetSourceRectangle(spriteNumber), color, 0f, origin, spriteEffect, depth);
+            spriteBatch.Draw(texture, new Rectangle((int)position.X, (int)position.Y, singleSpriteWidth, singleSpriteHeight), GetSourceRectangle(frameNumber), color, rotation, origin, spriteEffect, depth);
         }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 position, Vector2 size, Vector2 origin, float depth, Color color, SpriteEffects spriteEffect)
+        public void Draw(SpriteBatch spriteBatch, int frameNumber, Rectangle rectangle,Color color, float rotation, Vector2 origin, SpriteEffects spriteEffect, float depth)
         {
-            spriteBatch.Draw(texture, new Rectangle((int)position.X, (int)position.Y, (int)size.X, (int)size.Y), GetSourceRectangle(spriteNumber), color, 0f, origin, spriteEffect, depth);
+            spriteBatch.Draw(texture, rectangle, GetSourceRectangle(frameNumber), color, rotation, origin, spriteEffect, depth);
         }
+
+       // public void Draw(SpriteBatch spriteBatch, int frameNumber, Vector2 position, Vector2 size, Color color, float rotation, Vector2 origin, SpriteEffects spriteEffect, float depth)
+       // {
+       //     spriteBatch.Draw(texture, new Rectangle((int)position.X, (int)position.Y, (int)size.X, (int)size.Y), GetSourceRectangle(frameNumber), color, rotation, origin, spriteEffect, depth);
+       // }
     }
 }

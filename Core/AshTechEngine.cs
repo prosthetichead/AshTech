@@ -9,11 +9,8 @@ namespace AshTech.Core
     public class AshTechEngine : DrawableGameComponent
     {
         
-        public InputManager Input { get { return input; } }
-        private InputManager input;
-
-        public Console Console { get { return console; } }
-        private Console console;
+        public InputManager Input { get { return _input; } }
+        private InputManager _input;
 
         public GraphicsDeviceManager Graphics { get { return _graphics; } }
         private GraphicsDeviceManager _graphics;
@@ -29,9 +26,11 @@ namespace AshTech.Core
         public AshTechEngine(Game game, GraphicsDeviceManager graphics) : base(game)
         {
             _graphics = graphics;
-            input = new InputManager();
+            _input = new InputManager();
 
-            console = new Console();      
+            Console.Setup(game);
+            AssetManager.Setup(game);
+            
         }
 
         public void AddScene(Scene scene)
@@ -58,8 +57,8 @@ namespace AshTech.Core
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             //load the engine assets
-            console.LoadContent(Game.Content, Game);
-            input.AddAction(new InputAction("AshTechConsoleToggle", "Debug Console", new Keys[] { Keys.OemTilde }) { hiddenAction = true });
+            Console.LoadContent();//Game.Content, Game);
+            Input.AddAction(new InputAction("AshTechConsoleToggle", "Debug Console", new Keys[] { Keys.OemTilde }) { hiddenAction = true });
         }
 
         protected override void UnloadContent()
@@ -70,24 +69,16 @@ namespace AshTech.Core
         public override void Update(GameTime gameTime)
         {
             //update the inputs
-            input.Update();
+            Input.Update();
 
             //update the console
-            console.Update();
-            
-            //check if we have no scenes? if we have none then insert the test pattern
-            if (scenes.Count == 0)
-            {
-                //we have no scenes? then setup the testPattern
-                SceneTestPattern testPattern = new SceneTestPattern();
-                AddScene(testPattern);
-            }
-
+            Console.Update();
+                        
             //check if the conosle button is pressed
-            if (input.IsActionTriggered("AshTechConsoleToggle"))
+            if (Input.IsActionTriggered("AshTechConsoleToggle"))
             {
                 System.Diagnostics.Debug.WriteLine("console");
-                console.displayConsole = !console.displayConsole;
+                Console.displayConsole = !Console.displayConsole;
             }
          
             //add all the scenes in our update list 
@@ -97,8 +88,8 @@ namespace AshTech.Core
                 scenesToUpdate.Add(scene);
             }
 
-            //first screen has focus if the game window has focus
-            bool sceneHasFocus = Game.IsActive; 
+            //first screen has focus if the game window has focus and console isnt open
+            bool sceneHasFocus = Game.IsActive == true && Console.displayConsole == false; 
 
             while (scenesToUpdate.Count > 0)
             {
@@ -109,13 +100,13 @@ namespace AshTech.Core
                 if(scene.SceneState == SceneState.Active && sceneHasFocus)
                 {
                     scene.Update(gameTime, sceneHasFocus);
-                    scene.HandleInput(gameTime, sceneHasFocus, input);
+                    scene.HandleInput(gameTime, sceneHasFocus, Input);
                     sceneHasFocus = false; //now no other screen can have focus and run with it as true.
                 }
                 else
                 {
                     scene.Update(gameTime, sceneHasFocus);
-                    scene.HandleInput(gameTime, sceneHasFocus, input);
+                    scene.HandleInput(gameTime, sceneHasFocus, Input);
                 }
             }
         }
@@ -130,7 +121,8 @@ namespace AshTech.Core
                     scenesToDraw.Add(scene);
                 }
                 //first screen has focus if the game window has focus
-                bool sceneHasFocus = Game.IsActive;
+                bool sceneHasFocus = Game.IsActive == true && Console.displayConsole == false;
+
                 while (scenesToDraw.Count > 0)
                 {
                     //pop scenes off the list
@@ -149,7 +141,7 @@ namespace AshTech.Core
                 }
             }
 
-            console.Draw(SpriteBatch);
+            Console.Draw(SpriteBatch);
         }
 
     }
