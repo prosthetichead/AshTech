@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using AshTech.Debug;
+using FontStashSharp;
 
 namespace AshTech.Core
 {
@@ -21,6 +22,8 @@ namespace AshTech.Core
         private List<Scene> scenes = new List<Scene>();
         private List<Scene> scenesToDraw = new List<Scene>();
         private List<Scene> scenesToUpdate = new List<Scene>();
+
+        private SpriteFontBase font;
 
 
         public AshTechEngine(Game game, GraphicsDeviceManager graphics) : base(game)
@@ -59,6 +62,9 @@ namespace AshTech.Core
             //load the engine assets
             Console.LoadContent();//Game.Content, Game);
             Input.AddAction(new InputAction("AshTechConsoleToggle", "Debug Console", new Keys[] { Keys.OemTilde }) { hiddenAction = true });
+
+            //load the font to write engine info using
+            font = AssetManager.LoadFont("ashtech.zip", "fonts/m6x11.ttf", 24);
         }
 
         protected override void UnloadContent()
@@ -139,6 +145,15 @@ namespace AshTech.Core
                         scene.Draw(gameTime, sceneHasFocus);
                     }
                 }
+            }
+            else
+            {
+                //no scenes display a message 
+                GraphicsDevice.Clear(Color.Black);
+                SpriteBatch.Begin();
+                SpriteBatch.DrawString(font, "AshTech is running.\nNo scene is active.\nPress ~ to open the Console", new Vector2(30, 30), colors: new Color[] { Color.HotPink });
+                SpriteBatch.End();  
+
             }
 
             Console.Draw(SpriteBatch);
