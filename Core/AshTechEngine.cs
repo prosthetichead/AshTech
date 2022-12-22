@@ -151,7 +151,7 @@ namespace AshTech.Core
                 //no scenes display a message 
                 GraphicsDevice.Clear(Color.Black);
                 SpriteBatch.Begin();
-                SpriteBatch.DrawString(font, "AshTech is running.\nNo scene is active.\nPress ~ to open the Console", new Vector2(30, 30), colors: new Color[] { Color.HotPink });
+                SpriteBatch.DrawString(font, "Error no active scene.\nPress ~ to open the Console", new Vector2(30, 30), colors: new Color[] { Color.MonoGameOrange });
                 SpriteBatch.End();  
 
             }
