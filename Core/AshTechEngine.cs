@@ -64,7 +64,7 @@ namespace AshTech.Core
             Input.AddAction(new InputAction("AshTechConsoleToggle", "Debug Console", new Keys[] { Keys.OemTilde }) { hiddenAction = true });
 
             //load the font to write engine info using
-            font = AssetManager.LoadFont("ashtech.zip", "fonts/m6x11.ttf", 24);
+            font = AssetManager.LoadSpriteFontBase("ashtech.zip", "fonts/m6x11.ttf", 16, "ashtech-default-font");
         }
 
         protected override void UnloadContent()

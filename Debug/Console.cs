@@ -189,11 +189,11 @@ namespace AshTech.Debug
             PositionSize.Height = (int)(game.GraphicsDevice.Viewport.Height * .4f);            
 
             //sprite sheet
-            consoleTexture = AssetManager.LoadTexture2D("ashtech.zip", "console/console.png");
+            consoleTexture = AssetManager.LoadTexture2D("ashtech.zip", "console/console.png", "ashtech-console-texture");
             consoleSpriteSheet = new SpriteSheet(16, 16, consoleTexture);
 
             //font
-            consoleFont = AssetManager.LoadFont("ashtech.zip", "fonts/m6x11.ttf", 12);    
+            consoleFont = AssetManager.LoadSpriteFontBase("ashtech.zip", "fonts/m6x11.ttf", 12, "ashtech-console-font");    
         }
 
         private static void ScreenResized(object sender, EventArgs e)

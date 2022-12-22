@@ -1,5 +1,7 @@
 # AshTech
 
+AshTech Engine is for Monogame DesktopGL Framework. 
+
 Sample Monogame Game1 class with AshTech Added
 ```c#
 using Microsoft.Xna.Framework;

@@ -10,7 +10,6 @@ using Microsoft.Xna.Framework.Graphics;
 using AshTech.Debug;
 using System.IO;
 using Console = AshTech.Debug.Console;
-using System.Runtime.CompilerServices;
 using FontStashSharp;
 
 namespace AshTech.Core
@@ -25,20 +24,54 @@ namespace AshTech.Core
                 
         private static Game game;
         
+        public static List<string> SpriteFontBaseAssetKeys { get { return spriteFonts.Keys.ToList(); } }
+
         internal static void Setup(Game game)
         {
             AssetManager.game = game;
             textures = new Dictionary<string, Texture2D>();
             spriteFonts = new Dictionary<string, SpriteFontBase>();
             fontSystems = new Dictionary<string, FontSystem>();
+
+
+            Console.AddConsoleCommand(new ConsoleCommand("assets", "List asset keys for the provided asset type", "", a =>
+            {
+                if (a!=null && a.Count() > 0)
+                {
+                    string assetType = a[0].ToLower();
+                    List<string> assetKeys = new List<string>();
+                    switch (assetType)
+                    {
+                        case "texture":
+                            assetKeys = textures.Keys.ToList();
+                            break;
+                        case "spritefont":
+                            assetKeys = spriteFonts.Keys.ToList();
+                            break;
+                        case "fontsystem":
+                            assetKeys = fontSystems.Keys.ToList();
+                            break;
+                        default:
+                            assetKeys = new string[]{ "Please Provide a Asset Type Parameter", "texture", "spritefont", "fontsystem"}.ToList();
+                            break;
+                    }
+
+                    foreach(string key in assetKeys)
+                    {
+                        Console.WriteLine(key);
+                    }
+                }
+            
+            }));
         }
 
 
-        public static Texture2D LoadTexture2D(string zipPath, string assetName)
+        public static Texture2D LoadTexture2D(string zipPath, string assetName, string assetKey = null, bool overwrite = false)
         {
-            string assetKey = zipPath + assetName;
+            if(assetKey == null)
+                assetKey = zipPath + "/" + assetName;
 
-            if (textures.ContainsKey(assetKey))
+            if (!overwrite && textures.ContainsKey(assetKey))
                 return textures[assetKey];
 
             if (File.Exists(zipPath))
@@ -58,14 +91,28 @@ namespace AshTech.Core
             return null;
         }
 
-        public static SpriteFontBase LoadFont(string zipPath, string assetName, int size)
+        public static SpriteFontBase GetSpriteFontBase(string assetKey)
         {
-            string assetKey = zipPath + assetName + size;  //check if the SpriteFontBase already exists
             if (spriteFonts.ContainsKey(assetKey))
+            {
+                return spriteFonts[assetKey];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public static SpriteFontBase LoadSpriteFontBase(string zipPath, string assetName, int size, string fontSystemAssetKey = null, string assetKey = null, bool overwrite = false)
+        {
+            if (assetKey == null)
+                assetKey = zipPath + "/" + assetName + "-" + size; 
+
+            if (!overwrite && spriteFonts.ContainsKey(assetKey))
                 return spriteFonts[assetKey];
 
-            //check if we already have a FontSystem
-            string fontSystemAssetKey = zipPath + assetName;
+            if(fontSystemAssetKey == null)
+                fontSystemAssetKey = zipPath + assetName;
             FontSystem fontSystem = new FontSystem();
             if (fontSystems.ContainsKey(fontSystemAssetKey))
             {
@@ -80,7 +127,9 @@ namespace AshTech.Core
                     {
                         if (entry.FullName.Equals(assetName))
                         {
+                            
                             fontSystem.AddFont(entry.Open());
+                            fontSystems.Add(fontSystemAssetKey, fontSystem);
                             break;
                         }
                     }
@@ -95,25 +144,5 @@ namespace AshTech.Core
             spriteFonts.Add(assetKey, spriteFont);
             return spriteFont;
         }
-
-        //public static SpriteFont LoadSpriteFont(string assetName)
-        //{
-        //    string assetKey = assetName;
-        //    if (spriteFonts.ContainsKey(assetKey))
-        //        return spriteFonts[assetKey];
-
-        //    //Attempt to load from Content Pipeline First
-        //    if (File.Exists($"{rootDir}/{assetName}.xnb"))
-        //    {
-        //        SpriteFont spriteFont = game.Content.Load<SpriteFont>(assetName);
-        //        spriteFonts[assetKey] = spriteFont;
-        //        return spriteFont;
-        //    }
-
-        //    return null;
-        //}
-
-
-
     }
 }
