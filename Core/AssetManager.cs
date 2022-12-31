@@ -65,6 +65,23 @@ namespace AshTech.Core
             }));
         }
 
+        public static Texture2D LoadTexture2D(string assetName, string assetKey = null, bool overwrite = false)
+        {
+            if (assetKey == null)
+                assetKey = assetName;
+
+            if (!overwrite && textures.ContainsKey(assetKey))
+                return textures[assetKey];
+
+            if (File.Exists(assetName))
+            {
+                Texture2D texture = Texture2D.FromStream(game.GraphicsDevice, File.OpenRead(assetName) );
+                textures[assetKey] = texture;
+                return texture;
+            }
+
+            return null;
+        }
 
         public static Texture2D LoadTexture2D(string zipPath, string assetName, string assetKey = null, bool overwrite = false)
         {
