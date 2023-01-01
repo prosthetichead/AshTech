@@ -37,10 +37,5 @@ namespace AshTech.Core
         {
             spriteBatch.Draw(texture, rectangle, GetSourceRectangle(frameNumber), color, rotation, origin, spriteEffect, depth);
         }
-
-       // public void Draw(SpriteBatch spriteBatch, int frameNumber, Vector2 position, Vector2 size, Color color, float rotation, Vector2 origin, SpriteEffects spriteEffect, float depth)
-       // {
-       //     spriteBatch.Draw(texture, new Rectangle((int)position.X, (int)position.Y, (int)size.X, (int)size.Y), GetSourceRectangle(frameNumber), color, rotation, origin, spriteEffect, depth);
-       // }
     }
 }

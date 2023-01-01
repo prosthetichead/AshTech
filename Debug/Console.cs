@@ -189,11 +189,11 @@ namespace AshTech.Debug
             PositionSize.Height = (int)(game.GraphicsDevice.Viewport.Height * .4f);            
 
             //sprite sheet
-            consoleTexture = AssetManager.LoadTexture2D("ashtech.zip", "console/console.png", "ashtech-console-texture");
+            consoleTexture = AssetManager.LoadTexture2D("console/console.png", "ashtech.zip", "ashtech-console-texture");
             consoleSpriteSheet = new SpriteSheet(16, 16, consoleTexture);
 
             //font
-            consoleFont = AssetManager.LoadSpriteFontBase("ashtech.zip", "fonts/m6x11.ttf", 12, "ashtech-console-font");    
+            consoleFont = AssetManager.LoadFontSystem("fonts/m6x11.ttf", "ashtech.zip", assetKey: "ashtech-console-font").GetFont(12);    
         }
 
         private static void ScreenResized(object sender, EventArgs e)
@@ -365,7 +365,7 @@ namespace AshTech.Debug
                 //Rectangle textArea = new Rectangle(consoleRectangle.X + textPadding, consoleRectangle.Y + textPadding, (consoleRectangle.Width - (textPadding*2)), (consoleRectangle.Height - (textPadding * 2)));
                 int numberOfLines = MathHelper.Max((consoleRectangle.Height - textPadding * 2) / lineHeight - 1, 0);
 
-                spriteBatch.Begin();
+                spriteBatch.Begin(samplerState: SamplerState.PointClamp);
                 //top left corner
                 consoleSpriteSheet.Draw(spriteBatch, 0, new Vector2(consoleRectangle.X, consoleRectangle.Y), Color.White, 0f, new Vector2(0, 0), SpriteEffects.None, 0f);
 
@@ -398,7 +398,7 @@ namespace AshTech.Debug
                 {  
                     var line = consoleLines[i];
 
-                    FontHelper.DrawStringRectangle(spriteBatch, consoleFont, line.lineText, new Rectangle(consoleRectangle.X + textPadding, consoleRectangle.Y + lineHeight * lineCount, consoleRectangle.Width - textPadding * 2, lineHeight), FontHelper.Alignment.CenterLeft, new Color[] { line.lineColor });
+                    spriteBatch.DrawString(consoleFont, line.lineText, new Rectangle(consoleRectangle.X + textPadding, consoleRectangle.Y + lineHeight * lineCount, consoleRectangle.Width - textPadding * 2, lineHeight), Alignment.CenterLeft, new Color[] { line.lineColor });
                     //spriteBatch.DrawString(consoleFont, consoleLines[i].lineText, new Rectangle(consoleRectangle.X + textPadding, consoleRectangle.Y + lineHeight * lineCount, consoleRectangle.Width - textPadding * 2, lineHeight), , line.lineColor);
                     lineCount--;
                 }

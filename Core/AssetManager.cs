@@ -11,6 +11,7 @@ using AshTech.Debug;
 using System.IO;
 using Console = AshTech.Debug.Console;
 using FontStashSharp;
+using System.Drawing;
 
 namespace AshTech.Core
 {
@@ -18,21 +19,21 @@ namespace AshTech.Core
     {
 
         private static Dictionary<string, Texture2D> textures;
-        private static Dictionary<string, SpriteFontBase> spriteFonts;
-        private static Dictionary<string, FontSystem> fontSystems;
+        private static Dictionary<string, FontSystem> fonts;
         private static Dictionary<string, string> strings;
-                
+
+
         private static Game game;
         
-        public static List<string> SpriteFontBaseAssetKeys { get { return spriteFonts.Keys.ToList(); } }
+        //public static List<string> SpriteFontBaseAssetKeys { get { return spriteFonts.Keys.ToList(); } }
+        public static List<string> Texture2DAssetKeys { get { return textures.Keys.ToList(); } }
 
         internal static void Setup(Game game)
         {
             AssetManager.game = game;
             textures = new Dictionary<string, Texture2D>();
-            spriteFonts = new Dictionary<string, SpriteFontBase>();
-            fontSystems = new Dictionary<string, FontSystem>();
-
+            fonts = new Dictionary<string, FontSystem>();
+            strings = new Dictionary<string, string>();
 
             Console.AddConsoleCommand(new ConsoleCommand("assets", "List asset keys for the provided asset type", "", a =>
             {
@@ -45,14 +46,11 @@ namespace AshTech.Core
                         case "texture":
                             assetKeys = textures.Keys.ToList();
                             break;
-                        case "spritefont":
-                            assetKeys = spriteFonts.Keys.ToList();
-                            break;
-                        case "fontsystem":
-                            assetKeys = fontSystems.Keys.ToList();
-                            break;
+                        case "font":
+                            assetKeys = fonts.Keys.ToList();
+                            break;                        
                         default:
-                            assetKeys = new string[]{ "Please Provide a Asset Type Parameter", "texture", "spritefont", "fontsystem"}.ToList();
+                            assetKeys = new string[]{ "Please Provide a Asset Type Parameter", "texture", "font"}.ToList();
                             break;
                     }
 
@@ -60,83 +58,15 @@ namespace AshTech.Core
                     {
                         Console.WriteLine(key);
                     }
-                }
-            
+                }            
             }));
         }
 
-        public static Texture2D LoadTexture2D(string assetName, string assetKey = null, bool overwrite = false)
+        private static Stream LoadStream(string zipPath, string assetName)
         {
-            if (assetKey == null)
-                assetKey = assetName;
-
-            if (!overwrite && textures.ContainsKey(assetKey))
-                return textures[assetKey];
-
-            if (File.Exists(assetName))
+            if (zipPath != null)
             {
-                Texture2D texture = Texture2D.FromStream(game.GraphicsDevice, File.OpenRead(assetName) );
-                textures[assetKey] = texture;
-                return texture;
-            }
-
-            return null;
-        }
-
-        public static Texture2D LoadTexture2D(string zipPath, string assetName, string assetKey = null, bool overwrite = false)
-        {
-            if(assetKey == null)
-                assetKey = zipPath + "/" + assetName;
-
-            if (!overwrite && textures.ContainsKey(assetKey))
-                return textures[assetKey];
-
-            if (File.Exists(zipPath))
-            {
-                ZipArchive zipArchive = ZipFile.OpenRead(zipPath);
-                foreach(var entry in zipArchive.Entries)
-                {
-                    if (entry.FullName.Equals(assetName))
-                    {
-                        Texture2D texture = Texture2D.FromStream(game.GraphicsDevice, entry.Open());
-                        textures[assetKey] = texture;
-                        return texture;
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        public static SpriteFontBase GetSpriteFontBase(string assetKey)
-        {
-            if (spriteFonts.ContainsKey(assetKey))
-            {
-                return spriteFonts[assetKey];
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        public static SpriteFontBase LoadSpriteFontBase(string zipPath, string assetName, int size, string fontSystemAssetKey = null, string assetKey = null, bool overwrite = false)
-        {
-            if (assetKey == null)
-                assetKey = zipPath + "/" + assetName + "-" + size; 
-
-            if (!overwrite && spriteFonts.ContainsKey(assetKey))
-                return spriteFonts[assetKey];
-
-            if(fontSystemAssetKey == null)
-                fontSystemAssetKey = zipPath + assetName;
-            FontSystem fontSystem = new FontSystem();
-            if (fontSystems.ContainsKey(fontSystemAssetKey))
-            {
-                fontSystem = fontSystems[fontSystemAssetKey];
-            }
-            else
-            {
+                //load stream from the zip file.
                 if (File.Exists(zipPath))
                 {
                     ZipArchive zipArchive = ZipFile.OpenRead(zipPath);
@@ -144,22 +74,94 @@ namespace AshTech.Core
                     {
                         if (entry.FullName.Equals(assetName))
                         {
-                            
-                            fontSystem.AddFont(entry.Open());
-                            fontSystems.Add(fontSystemAssetKey, fontSystem);
-                            break;
+                            return entry.Open();
                         }
                     }
                 }
-                else
-                {
-                    return null;
-                }
+            }
+            else
+            {
+                return File.OpenRead(assetName);
+            }
+            return null;
+        }
+
+        public static string LoadString(string assetName, string zipPath = null, string assetKey = null, bool storeAsset = true, bool overwrite = false)
+        {
+            if (assetKey == null)
+            {
+                assetKey = zipPath == null ? assetName : zipPath + "/" + assetName;
+            }
+            //do we already have a asset loaded with this name?
+            if (!overwrite && textures.ContainsKey(assetKey))
+                return strings[assetKey];
+
+            var stream = LoadStream(zipPath, assetName);
+            StreamReader sr = new StreamReader(stream);
+            return sr.ReadToEnd();
+        }
+
+        public static Texture2D LoadTexture2D(string assetName, string zipPath = null, string assetKey = null, bool storeAsset = true, bool overwrite = false)
+        {
+            if (assetKey == null)
+            {
+                assetKey = zipPath == null ? assetName : zipPath + "/" + assetName;
+            }
+            //do we already have a asset loaded with this name?
+            if (!overwrite && textures.ContainsKey(assetKey))
+                return textures[assetKey];
+
+            var stream = LoadStream(zipPath, assetName);
+            Texture2D texture = Texture2D.FromStream(game.GraphicsDevice, stream);
+            if (storeAsset)
+            {
+                textures[assetKey] = texture;
+            }
+            return texture;
+        }
+
+        public static Texture2D GetTexture2D(string assetKey)
+        {
+            if (textures.ContainsKey(assetKey))            
+                return textures[assetKey];            
+            else
+                return null;    
+        }
+        public static SpriteFontBase GetSpriteFontBase(string assetKey, float size)
+        {
+            if (fonts.ContainsKey(assetKey))            
+                return fonts[assetKey].GetFont(size);            
+            else
+                return null;
+        }
+        public static FontSystem GetFontSystem(string assetKey)
+        {
+            if (fonts.ContainsKey(assetKey))
+                return fonts[assetKey];
+            else
+                return null;
+        }
+
+        public static FontSystem LoadFontSystem(string assetName, string zipPath = null, string assetKey = null, FontSystemSettings fontSystemSettings = null, bool storeAsset = true, bool overwrite = false)
+        {
+            if (assetKey == null)
+            {
+                assetKey = zipPath == null ? assetName : zipPath + "/" + assetName;
             }
 
-            SpriteFontBase spriteFont = fontSystem.GetFont(size);
-            spriteFonts.Add(assetKey, spriteFont);
-            return spriteFont;
+            //do we already have a asset loaded with this name?
+            if (!overwrite && fonts.ContainsKey(assetKey))
+                return fonts[assetKey];
+
+            if (fontSystemSettings == null)
+                fontSystemSettings = new FontSystemSettings();
+
+            FontSystem fontSystem = new FontSystem(fontSystemSettings);
+            fontSystem.AddFont(LoadStream(zipPath, assetName));
+            if (storeAsset) { 
+                    fonts.Add(assetKey, fontSystem);    
+            }
+            return fontSystem;
         }
     }
 }
