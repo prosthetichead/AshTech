@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using AshTech.Debug;
 using FontStashSharp;
+using Myra;
+using Myra.Graphics2D.UI;
 
 namespace AshTech.Core
 {
@@ -31,9 +33,10 @@ namespace AshTech.Core
             _graphics = graphics;
             _input = new InputManager();
 
+            MyraEnvironment.Game = Game;            
+
             Console.Setup(game);
-            AssetManager.Setup(game);
-            
+            AshAssetManager.Setup(game);            
         }
 
         public void AddScene(Scene scene)
@@ -60,11 +63,11 @@ namespace AshTech.Core
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             //load the engine assets
-            Console.LoadContent();//Game.Content, Game);
+            Console.LoadContent();
             Input.AddAction(new InputAction("AshTechConsoleToggle", "Debug Console", new Keys[] { Keys.OemTilde }) { hiddenAction = true });
 
             //load the font to write engine info using
-            font = AssetManager.LoadFontSystem("fonts/m6x11.ttf", "ashtech.zip", "ashtech-default-font").GetFont(16);
+            font = AshAssetManager.LoadFontSystem("fonts/m6x11.ttf", "ashtech.zip", "ashtech-default-font").GetFont(16);
         }
 
         protected override void UnloadContent()
@@ -153,7 +156,6 @@ namespace AshTech.Core
                 SpriteBatch.Begin();
                 SpriteBatch.DrawString(font, "Error no active scene.\nPress ~ to open the Console", new Vector2(30, 30), colors: new Color[] { Color.MonoGameOrange });
                 SpriteBatch.End();  
-
             }
 
             Console.Draw(SpriteBatch);

@@ -1,13 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Myra.Graphics2D.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
-using static System.TimeZoneInfo;
 
 namespace AshTech.Core
 {
@@ -21,6 +21,7 @@ namespace AshTech.Core
     {        
         internal AshTechEngine ashTech;
 
+        public Game Game { get { return ashTech.Game; } }
         public SpriteBatch SpriteBatch { get { return ashTech.SpriteBatch; } }
         public ContentManager Content { get { return ashTech.Game.Content;  } }
         public GraphicsDeviceManager Graphics { get { return ashTech.Graphics; } }

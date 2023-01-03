@@ -15,7 +15,7 @@ using System.Drawing;
 
 namespace AshTech.Core
 {
-    public static class AssetManager
+    public static class AshAssetManager
     {
 
         private static Dictionary<string, Texture2D> textures;
@@ -30,7 +30,7 @@ namespace AshTech.Core
 
         internal static void Setup(Game game)
         {
-            AssetManager.game = game;
+            AshAssetManager.game = game;
             textures = new Dictionary<string, Texture2D>();
             fonts = new Dictionary<string, FontSystem>();
             strings = new Dictionary<string, string>();
