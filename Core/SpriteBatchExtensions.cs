@@ -27,6 +27,7 @@ namespace AshTech.Core
     
     public static class SpriteBatchExtensions
     {
+        //Takes a rectable and draws a string inside the rectangle with the chosen alignment.
         public static float DrawString(this SpriteBatch batch, SpriteFontBase font, string text, Rectangle rectangle, Alignment alignment, Color[] color,
                                                Vector2? scale = null, float rotation = 0, float layerDepth = 0, float characterSpacing = 0, float lineSpacing = 0,
                                                TextStyle textStyle = TextStyle.None, FontSystemEffect fontSystemEffect = FontSystemEffect.None, int effectAmount = 0)

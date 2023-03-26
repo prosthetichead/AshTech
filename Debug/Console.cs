@@ -99,6 +99,7 @@ namespace AshTech.Debug
         private static string commandString = "";
         private static List<string> previousCommandStrings = new List<string>();
         private static int previousCommandIndex = 0;
+
         private static bool startAnimating = false;
         private static ConsoleState consoleState = ConsoleState.closed;
 
