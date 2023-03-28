@@ -14,20 +14,27 @@ namespace AshTech.UI
     /// </summary>
     public class Desktop
     {
-        private Rectangle bounds;
-        private List<UIWidget> widgets;
-        internal Game game;
+        public Rectangle bounds;
+        private Dictionary<string,UIWidget> widgets;
+        public Game game { get { return _game; } }
+        private Game _game;
 
         public Desktop(Rectangle bounds, Game game)
         {
             this.bounds = bounds;
-            widgets = new List<UIWidget>();
-            this.game = game;
+            widgets = new Dictionary<string, UIWidget>();
+            _game = game;
+        }
+
+        public void AddWidget(string widgetUnquieName, UIWidget widget)
+        {
+            widget.desktop = this;
+            widgets.Add(widgetUnquieName, widget);
         }
 
         public void Update(GameTime gameTime)
         {
-            foreach (UIWidget widget in widgets)
+            foreach (UIWidget widget in widgets.Values)
             {
                 widget.Update(gameTime);
             }
@@ -35,7 +42,7 @@ namespace AshTech.UI
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            foreach (UIWidget widget in widgets)
+            foreach (UIWidget widget in widgets.Values)
             {
                 widget.Draw(spriteBatch);
             }

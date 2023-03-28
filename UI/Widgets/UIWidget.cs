@@ -10,8 +10,8 @@ namespace AshTech.UI.Widgets
 {
     public abstract class UIWidget
     {
-        private Desktop desktop;
-        Rectangle bounds;
+        internal Desktop desktop;
+        internal Rectangle bounds;
         public bool focus;
 
         public UIWidget(Desktop desktop, Rectangle bounds)

@@ -105,6 +105,8 @@ namespace AshTech.Debug
 
         private static Game game;
 
+        private static AshTech.UI.Desktop desktop;
+
         private static bool textInput { get { if (consoleState == ConsoleState.open) return true; else return false; } }
 
         public static bool displayConsole
@@ -142,6 +144,10 @@ namespace AshTech.Debug
             consoleLines.Add(consoleLine);
             consoleLine = new ConsoleLine() { lineType = ConsoleLineType.normal, lineText = "== enter ? for list of avalable commands ==" };
             consoleLines.Add(consoleLine);
+
+            //setup ui desktop
+            desktop = new UI.Desktop(PositionSize, game);
+            
 
             //setup listener for text input
             game.Window.TextInput += Window_TextInput;
@@ -194,7 +200,10 @@ namespace AshTech.Debug
             consoleSpriteSheet = new SpriteSheet(16, 16, consoleTexture);
 
             //font
-            consoleFont = AshAssetManager.LoadFontSystem("fonts/m6x11.ttf", "ashtech.zip", assetKey: "ashtech-console-font").GetFont(12);    
+            consoleFont = AshAssetManager.LoadFontSystem("fonts/m6x11.ttf", "ashtech.zip", assetKey: "ashtech-console-font").GetFont(12);
+
+            //add widgets to desktop
+            desktop.AddWidget("consoleInput", new UI.Widgets.TextInput(desktop, new Rectangle(10, 10, 200, 100), consoleFont));
         }
 
         private static void ScreenResized(object sender, EventArgs e)
@@ -346,7 +355,7 @@ namespace AshTech.Debug
 
         internal static void Draw(SpriteBatch spriteBatch)
         {
-            
+            desktop.Draw(spriteBatch);
 
             if (displayConsole)
             {
