@@ -114,7 +114,7 @@ namespace AshTech.Core
             Input.Update();
 
             //update the console
-            Console.Update();
+            Console.Update(gameTime);
                         
             //check if the conosle button is pressed
             if (Input.IsActionTriggered("AshTechConsoleToggle"))

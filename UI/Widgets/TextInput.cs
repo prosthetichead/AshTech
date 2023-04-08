@@ -1,4 +1,5 @@
-﻿using AshTech.Debug;
+﻿using AshTech.Core;
+using AshTech.Debug;
 using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,17 +15,17 @@ namespace AshTech.UI.Widgets
     public class TextInput : UIWidget
     {
         private SpriteFontBase font;
-        
+        public Alignment alignment;
+
         public int textPadding = 10;
 
         public bool displayCursor = true;
-        public int cursorFlashSpeed = 25;
-        public char cursor = '#';
+        public int cursorFlashSpeed = 350;
+        public char cursor = '|';
         public string preText = ">";
         public string postText = "";
-        public bool hasFocus = true;
 
-        private int _timeSinceCursorFlash = 0;
+        private float _timeSinceCursorFlash = 0;
         private bool _displayCursor = false;
         
 
@@ -34,19 +35,20 @@ namespace AshTech.UI.Widgets
         private string _value = "";
 
         public event EventHandler ValueChanaged;
+        public event EventHandler PressedEnter;
 
 
-        public TextInput(Desktop desktop, Rectangle bounds, SpriteFontBase font) : base(desktop, bounds)
+        public TextInput(Desktop desktop, Rectangle bounds, DesktopAnchor anchor, SpriteFontBase font, Alignment alignment) : base(desktop, bounds, anchor)
         {
             //setup listener for text input
             desktop.game.Window.TextInput += Window_TextInput;
-
+            this.alignment = alignment;
             this.font = font;
         }
 
         private void Window_TextInput(object sender, TextInputEventArgs e)
         {
-            if (hasFocus)
+            if (focus)
             {
                 char character = e.Character;
                 var key = e.Key;
@@ -62,7 +64,7 @@ namespace AshTech.UI.Widgets
                 {
                     if (value.Length > 0)
                     {
-                        //fire off a pressed enter event?
+                        PressedEnter?.Invoke(this, EventArgs.Empty);
                     }
                 }
                 else
@@ -75,18 +77,21 @@ namespace AshTech.UI.Widgets
 
         public override void Update(GameTime gameTime)
         {
-            
+            _timeSinceCursorFlash += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            if(_timeSinceCursorFlash >= cursorFlashSpeed)
+            {
+                _timeSinceCursorFlash = 0;
+                displayCursor = !displayCursor;
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            Rectangle desktopRectangle = desktop.bounds;
-
-            spriteBatch.Begin();
-                spriteBatch.DrawString(font, preText + value + (displayCursor ? cursor : "") + postText, new Vector2(desktopRectangle.X + bounds.X + textPadding, desktopRectangle.X + bounds.Y), new Color[] { Color.LimeGreen });
-            spriteBatch.End();
+            if (visible)
+            {
+                Rectangle drawPos = DrawPosition();
+                spriteBatch.DrawString(font, preText + value + (displayCursor ? cursor : "") + postText, rectangle: drawPos, alignment, new Color[] { Color.LimeGreen });           
+            }
         }
-
     }
-
 }

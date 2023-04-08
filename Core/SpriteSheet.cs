@@ -12,7 +12,10 @@ namespace AshTech.Core
         private Texture2D texture;
         private int singleSpriteWidth;
         private int singleSpriteHeight;
-                        
+
+        public int SpriteWidth { get { return singleSpriteWidth; } }
+        public int SpriteHeight { get { return singleSpriteHeight; } }
+            
         public SpriteSheet(int singleSpriteWidth, int singleSpriteHeight, Texture2D texture)
         {
             this.singleSpriteWidth = singleSpriteWidth;

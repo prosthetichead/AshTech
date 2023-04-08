@@ -7,6 +7,8 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
 using AshTech.Core;
 using FontStashSharp;
+using AshTech.UI;
+using AshTech.UI.Widgets;
 
 namespace AshTech.Debug
 {
@@ -91,21 +93,17 @@ namespace AshTech.Debug
         private static int textPadding = 10;
         private static int lineHeight = 0;
 
-        private static int animationSpeed = 18;
-        private static int timeSinceCursorFlash = 0;
-        private static int timeSinceCursorSpeed = 25;
-        private static bool displayCursor;
-        private static string cursor = "|";
-        private static string commandString = "";
         private static List<string> previousCommandStrings = new List<string>();
         private static int previousCommandIndex = 0;
 
+        private static int animationSpeed = 15;
         private static bool startAnimating = false;
         private static ConsoleState consoleState = ConsoleState.closed;
 
         private static Game game;
 
-        private static AshTech.UI.Desktop desktop;
+        private static Desktop desktop;
+        private static TextInput consoleInput;
 
         private static bool textInput { get { if (consoleState == ConsoleState.open) return true; else return false; } }
 
@@ -122,7 +120,7 @@ namespace AshTech.Debug
             {
                 if (value == false && consoleState == ConsoleState.open)
                 {
-                    startAnimating = true;
+                    startAnimating = true;                  
                     consoleState = ConsoleState.closing;
                 }
                 if (value == true && consoleState == ConsoleState.closed)
@@ -134,7 +132,8 @@ namespace AshTech.Debug
         }
 
         private static Rectangle PositionSize = new Rectangle(5, 0, 900, 350);
-        private static Rectangle consoleRectangle = new Rectangle(0, 0, 0, 0);
+
+        //private static Rectangle consoleRectangle = new Rectangle(0, 0, 0, 0);
 
         internal static void Setup(Game game)
         {
@@ -146,13 +145,8 @@ namespace AshTech.Debug
             consoleLines.Add(consoleLine);
 
             //setup ui desktop
-            desktop = new UI.Desktop(PositionSize, game);
+            desktop = new Desktop(PositionSize, game);
             
-
-            //setup listener for text input
-            game.Window.TextInput += Window_TextInput;
-            game.Window.KeyUp += Window_KeyUp;
-            //setup listener for screen resized events
             game.Window.ClientSizeChanged += ScreenResized;
 
             //setup default commands
@@ -189,7 +183,7 @@ namespace AshTech.Debug
 
         }
 
-        internal static void LoadContent()//ContentManager content, Game game)
+        internal static void LoadContent()
         {
             //setup position and size
             PositionSize.Width = game.GraphicsDevice.Viewport.Width - 10;
@@ -203,71 +197,35 @@ namespace AshTech.Debug
             consoleFont = AshAssetManager.LoadFontSystem("fonts/m6x11.ttf", "ashtech.zip", assetKey: "ashtech-console-font").GetFont(12);
 
             //add widgets to desktop
-            desktop.AddWidget("consoleInput", new UI.Widgets.TextInput(desktop, new Rectangle(10, 10, 200, 100), consoleFont));
+            desktop.SetBackground(consoleSpriteSheet);
+
+            desktop.bounds = PositionSize;
+            consoleInput = new TextInput(desktop, new Rectangle(10, 0, 200, 18), UI.Widgets.DesktopAnchor.BottomLeft, consoleFont, Alignment.TopLeft);
+            desktop.AddWidget("consoleInput", consoleInput);
+            consoleInput.PressedEnter += TextInput_PressedEnter;
+        }
+
+        private static void TextInput_PressedEnter(object sender, EventArgs e)
+        {
+            if (textInput)
+            {
+                UI.Widgets.TextInput textInput = (UI.Widgets.TextInput)sender;
+
+                string commandString = textInput.value;
+                previousCommandIndex = -1;
+                WriteLine(ConsoleLineType.command, ">" + commandString);
+                ExecuteCommandString(commandString);
+                previousCommandStrings.Insert(0, commandString);
+                consoleInput.value = "";
+            }
         }
 
         private static void ScreenResized(object sender, EventArgs e)
         {
             PositionSize.Width = game.GraphicsDevice.Viewport.Width - 10;
             PositionSize.Height = (int)(game.GraphicsDevice.Viewport.Height * .4f);
-        }
 
-        private static void Window_KeyUp(object sender, InputKeyEventArgs e)
-        {
-            if (textInput)
-            {
-                var key = e.Key;
-                if (key == Keys.Up)
-                {
-                    if (previousCommandStrings.Count > 0)
-                    {
-                        previousCommandIndex++;
-                        previousCommandIndex = Math.Clamp(previousCommandIndex, 0, previousCommandStrings.Count - 1);
-                        string newCommandString = previousCommandStrings[previousCommandIndex];
-                        commandString = newCommandString;
-                    }
-                }
-                else if (key == Keys.Down)
-                {
-                    if (previousCommandStrings.Count > 0)
-                    {
-                        previousCommandIndex--;
-                        previousCommandIndex = Math.Clamp(previousCommandIndex, 0, previousCommandStrings.Count - 1);
-                        string newCommandString = previousCommandStrings[previousCommandIndex];
-                        commandString = newCommandString;
-                    }
-                }
-            }
-        }
-
-        private static void Window_TextInput(object sender, TextInputEventArgs e)
-        {
-            if (textInput)
-            {
-                char character = e.Character;
-                var key = e.Key;
-                if (key == Keys.Back)
-                {
-                    if (commandString.Length > 0)
-                        commandString = commandString.Remove(commandString.Length - 1);
-                }
-                else if (key == Keys.Enter)
-                {
-                    if (commandString.Length > 0)
-                    {
-                        previousCommandIndex = -1;
-                        WriteLine(ConsoleLineType.command, ">" + commandString);
-                        ExecuteCommandString();
-                        previousCommandStrings.Insert(0, commandString);
-                        commandString = "";
-
-                    }
-                }
-                else if (key != Keys.OemTilde)
-                {
-                    commandString += character;
-                }
-            }
+            desktop.bounds = PositionSize;
         }
 
         public static void AddConsoleCommand(ConsoleCommand consoleCommand)
@@ -275,7 +233,7 @@ namespace AshTech.Debug
             consoleCommands.Add(consoleCommand);
         }
 
-        private static void ExecuteCommandString()
+        private static void ExecuteCommandString(string commandString)
         {
             var commandArray = commandString.Trim().Split(' ');
             string command = "";
@@ -315,56 +273,56 @@ namespace AshTech.Debug
             }
         }
 
-        internal static void Update()
+        internal static void Update(GameTime gameTime)
         {
             if (startAnimating)
             {
-                consoleRectangle = PositionSize;
+                desktop.bounds = PositionSize;
                 if (consoleState == ConsoleState.opening)
                 {
-                    consoleRectangle.Height = 0;
+                    desktop.bounds.Y = 0 - (PositionSize.Height+10) ;
                 }
                 startAnimating = false;
-            }
 
+                consoleInput.focus = false;
+                consoleInput.value = "";
+            }
+             
             if (consoleState == ConsoleState.opening)
             {
-                //grow the console till its the same size as PositionSize
-                consoleRectangle.Height += animationSpeed;
-                if (consoleRectangle.Height > PositionSize.Height)
+                //slide in the console till its the same position as PositionSize
+                desktop.bounds.Y += animationSpeed;
+                if (desktop.bounds.Y > PositionSize.Y)
                 {
                     consoleState = ConsoleState.open;
-                    consoleRectangle.Height = PositionSize.Height;
+                    desktop.bounds.Y = PositionSize.Y;
+                    consoleInput.focus = true;
                 }
-
             }
             else if (consoleState == ConsoleState.closing)
             {
-                consoleRectangle.Height -= animationSpeed;
-                if (consoleRectangle.Height <= 0)
+                desktop.bounds.Y -= animationSpeed;
+                if (desktop.bounds.Y <= 0 - (PositionSize.Height + 10))
                 {
                     consoleState = ConsoleState.closed;
-                    consoleRectangle.Height = 0;
+                    desktop.bounds.Y = 0 - (PositionSize.Height + 10);
+                    
                 }
             }
             else if(consoleState == ConsoleState.open)
             {
-                consoleRectangle = PositionSize;
+                desktop.bounds = PositionSize;
             }
+
+            desktop.Update(gameTime);
         }
 
         internal static void Draw(SpriteBatch spriteBatch)
         {
-            desktop.Draw(spriteBatch);
-
             if (displayConsole)
             {
-                timeSinceCursorFlash++;
-                if (timeSinceCursorFlash >= timeSinceCursorSpeed)
-                {
-                    timeSinceCursorFlash = 0;
-                    displayCursor = !displayCursor;
-                }
+                desktop.visible = true;
+                Rectangle consoleRectangle = desktop.bounds;
 
                 if (lineHeight == 0)
                 {
@@ -376,32 +334,33 @@ namespace AshTech.Debug
                 int numberOfLines = MathHelper.Max((consoleRectangle.Height - textPadding * 2) / lineHeight - 1, 0);
 
                 spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+
                 //top left corner
-                consoleSpriteSheet.Draw(spriteBatch, 0, new Vector2(consoleRectangle.X, consoleRectangle.Y), Color.White, 0f, new Vector2(0, 0), SpriteEffects.None, 0f);
+                //consoleSpriteSheet.Draw(spriteBatch, 0, new Vector2(consoleRectangle.X, consoleRectangle.Y), Color.White, 0f, new Vector2(0, 0), SpriteEffects.None, 0f);
 
                 //top
-                consoleSpriteSheet.Draw(spriteBatch, 1, new Rectangle(consoleRectangle.X + 16, consoleRectangle.Y, consoleRectangle.Width - 32, 16), Color.White, 0f, new Vector2(0, 0),SpriteEffects.None,0f);
+                //consoleSpriteSheet.Draw(spriteBatch, 1, new Rectangle(consoleRectangle.X + 16, consoleRectangle.Y, consoleRectangle.Width - 32, 16), Color.White, 0f, new Vector2(0, 0), SpriteEffects.None, 0f);
 
                 // top right corner                
-                consoleSpriteSheet.Draw(spriteBatch, 2, new Vector2(consoleRectangle.X + consoleRectangle.Width, consoleRectangle.Y), Color.White, 0f, new Vector2(16, 0), SpriteEffects.None, 0f);
+                //consoleSpriteSheet.Draw(spriteBatch, 2, new Vector2(consoleRectangle.X + consoleRectangle.Width, consoleRectangle.Y), Color.White, 0f, new Vector2(16, 0), SpriteEffects.None, 0f);
 
                 //left 
-                consoleSpriteSheet.Draw(spriteBatch, 3, new Rectangle(consoleRectangle.X, consoleRectangle.Y + 16, 16, consoleRectangle.Height - 32), Color.White, 0f, new Vector2(0, 0), SpriteEffects.None, 0f);
+                //consoleSpriteSheet.Draw(spriteBatch, 3, new Rectangle(consoleRectangle.X, consoleRectangle.Y + 16, 16, consoleRectangle.Height - 32), Color.White, 0f, new Vector2(0, 0), SpriteEffects.None, 0f);
 
                 //Center 
-                consoleSpriteSheet.Draw(spriteBatch, 4, new Rectangle(consoleRectangle.X + 16, consoleRectangle.Y + 16, consoleRectangle.Width - 32, consoleRectangle.Height - 32), Color.White, 0f, new Vector2(0, 0), SpriteEffects.None, 0f);
+                //consoleSpriteSheet.Draw(spriteBatch, 4, new Rectangle(consoleRectangle.X + 16, consoleRectangle.Y + 16, consoleRectangle.Width - 32, consoleRectangle.Height - 32), Color.White, 0f, new Vector2(0, 0), SpriteEffects.None, 0f);
 
                 //right
-                consoleSpriteSheet.Draw(spriteBatch, 5, new Rectangle(consoleRectangle.X + consoleRectangle.Width, consoleRectangle.Y + 16, 16, consoleRectangle.Height - 32), Color.White, 0f, new Vector2(16, 0), SpriteEffects.None, 0f);
+                //consoleSpriteSheet.Draw(spriteBatch, 5, new Rectangle(consoleRectangle.X + consoleRectangle.Width, consoleRectangle.Y + 16, 16, consoleRectangle.Height - 32), Color.White, 0f, new Vector2(16, 0), SpriteEffects.None, 0f);
 
                 //bottom left corner
-                consoleSpriteSheet.Draw(spriteBatch, 6, new Vector2(consoleRectangle.X, consoleRectangle.Y + consoleRectangle.Height), Color.White, 0f, new Vector2(0, 16), SpriteEffects.None, 0f);
+                //consoleSpriteSheet.Draw(spriteBatch, 6, new Vector2(consoleRectangle.X, consoleRectangle.Y + consoleRectangle.Height), Color.White, 0f, new Vector2(0, 16), SpriteEffects.None, 0f);
 
                 //bottom
-                consoleSpriteSheet.Draw(spriteBatch, 7, new Rectangle(consoleRectangle.X + 16, consoleRectangle.Y + consoleRectangle.Height, consoleRectangle.Width - 32, 16), Color.White, 0f, new Vector2(0, 16), SpriteEffects.None, 0f);
+                //consoleSpriteSheet.Draw(spriteBatch, 7, new Rectangle(consoleRectangle.X + 16, consoleRectangle.Y + consoleRectangle.Height, consoleRectangle.Width - 32, 16), Color.White, 0f, new Vector2(0, 16), SpriteEffects.None, 0f);
 
                 //bottom right corner
-                consoleSpriteSheet.Draw(spriteBatch, 8, new Vector2(consoleRectangle.X + consoleRectangle.Width, consoleRectangle.Y + consoleRectangle.Height), Color.White, 0f, new Vector2(16, 16), SpriteEffects.None, 0f);
+                //consoleSpriteSheet.Draw(spriteBatch, 8, new Vector2(consoleRectangle.X + consoleRectangle.Width, consoleRectangle.Y + consoleRectangle.Height), Color.White, 0f, new Vector2(16, 16), SpriteEffects.None, 0f);
 
                 int lineCount = numberOfLines;
                 for (int i = consoleLines.Count - 1; i >= 0 && i >= consoleLines.Count - 1 - numberOfLines; i--)
@@ -413,10 +372,12 @@ namespace AshTech.Debug
                     lineCount--;
                 }
 
-                spriteBatch.DrawString(consoleFont, ">" + commandString + (displayCursor ? cursor : ""), new Vector2(consoleRectangle.X + textPadding, consoleRectangle.Height - (lineHeight + lineHeight / 2)), new Color[] { Color.LimeGreen });
+                desktop.Draw(spriteBatch);
 
                 spriteBatch.End();
             }
+
+            
         }
 
     }
