@@ -32,10 +32,13 @@ namespace AshTech.Core
         public AshTechEngine(Game game, GraphicsDeviceManager graphics) : base(game)
         {
             _graphics = graphics;
-            _input = new InputManager();      
+            _input = new InputManager();
 
+            GameSettings.Setup(game, graphics);
             Console.Setup(game);
-            AshAssetManager.Setup(game);            
+            AshAssetManager.Setup(game);
+
+            
         }
 
         public void AddScene(string sceneUniqueName, Scene scene)

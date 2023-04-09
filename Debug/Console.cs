@@ -147,7 +147,7 @@ namespace AshTech.Debug
             //setup ui desktop
             desktop = new Desktop(PositionSize, game);
             
-            game.Window.ClientSizeChanged += ScreenResized;
+            GameSettings.SettingsChanaged += ScreenResized;
 
             //setup default commands
             consoleCommands.Add(new ConsoleCommand("?", "This Help Text. [ ? [page number] ] to get additinal pages", "Help! I need somebody. Help! Not just anybody. Help! You know I need someone. Help!", a =>
@@ -180,7 +180,7 @@ namespace AshTech.Debug
             {
                 consoleLines.Clear();
             }));
-
+            consoleCommands.Add(new ConsoleCommand("exit", "exit the game", "exit the game", a => { game.Exit(); }));
         }
 
         internal static void LoadContent()
@@ -200,7 +200,7 @@ namespace AshTech.Debug
             desktop.SetBackground(consoleSpriteSheet);
 
             desktop.bounds = PositionSize;
-            consoleInput = new TextInput(desktop, new Rectangle(10, 0, 200, 18), UI.Widgets.DesktopAnchor.BottomLeft, consoleFont, Alignment.TopLeft);
+            consoleInput = new TextInput(desktop, new Rectangle(10, 0, 200, 18), DesktopAnchor.BottomLeft, consoleFont, Alignment.TopLeft);
             desktop.AddWidget("consoleInput", consoleInput);
             consoleInput.PressedEnter += TextInput_PressedEnter;
         }
@@ -335,44 +335,15 @@ namespace AshTech.Debug
 
                 spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-                //top left corner
-                //consoleSpriteSheet.Draw(spriteBatch, 0, new Vector2(consoleRectangle.X, consoleRectangle.Y), Color.White, 0f, new Vector2(0, 0), SpriteEffects.None, 0f);
-
-                //top
-                //consoleSpriteSheet.Draw(spriteBatch, 1, new Rectangle(consoleRectangle.X + 16, consoleRectangle.Y, consoleRectangle.Width - 32, 16), Color.White, 0f, new Vector2(0, 0), SpriteEffects.None, 0f);
-
-                // top right corner                
-                //consoleSpriteSheet.Draw(spriteBatch, 2, new Vector2(consoleRectangle.X + consoleRectangle.Width, consoleRectangle.Y), Color.White, 0f, new Vector2(16, 0), SpriteEffects.None, 0f);
-
-                //left 
-                //consoleSpriteSheet.Draw(spriteBatch, 3, new Rectangle(consoleRectangle.X, consoleRectangle.Y + 16, 16, consoleRectangle.Height - 32), Color.White, 0f, new Vector2(0, 0), SpriteEffects.None, 0f);
-
-                //Center 
-                //consoleSpriteSheet.Draw(spriteBatch, 4, new Rectangle(consoleRectangle.X + 16, consoleRectangle.Y + 16, consoleRectangle.Width - 32, consoleRectangle.Height - 32), Color.White, 0f, new Vector2(0, 0), SpriteEffects.None, 0f);
-
-                //right
-                //consoleSpriteSheet.Draw(spriteBatch, 5, new Rectangle(consoleRectangle.X + consoleRectangle.Width, consoleRectangle.Y + 16, 16, consoleRectangle.Height - 32), Color.White, 0f, new Vector2(16, 0), SpriteEffects.None, 0f);
-
-                //bottom left corner
-                //consoleSpriteSheet.Draw(spriteBatch, 6, new Vector2(consoleRectangle.X, consoleRectangle.Y + consoleRectangle.Height), Color.White, 0f, new Vector2(0, 16), SpriteEffects.None, 0f);
-
-                //bottom
-                //consoleSpriteSheet.Draw(spriteBatch, 7, new Rectangle(consoleRectangle.X + 16, consoleRectangle.Y + consoleRectangle.Height, consoleRectangle.Width - 32, 16), Color.White, 0f, new Vector2(0, 16), SpriteEffects.None, 0f);
-
-                //bottom right corner
-                //consoleSpriteSheet.Draw(spriteBatch, 8, new Vector2(consoleRectangle.X + consoleRectangle.Width, consoleRectangle.Y + consoleRectangle.Height), Color.White, 0f, new Vector2(16, 16), SpriteEffects.None, 0f);
+                desktop.Draw(spriteBatch);
 
                 int lineCount = numberOfLines;
                 for (int i = consoleLines.Count - 1; i >= 0 && i >= consoleLines.Count - 1 - numberOfLines; i--)
                 {  
                     var line = consoleLines[i];
-
                     spriteBatch.DrawString(consoleFont, line.lineText, new Rectangle(consoleRectangle.X + textPadding, consoleRectangle.Y + lineHeight * lineCount, consoleRectangle.Width - textPadding * 2, lineHeight), Alignment.CenterLeft, new Color[] { line.lineColor });
-                    //spriteBatch.DrawString(consoleFont, consoleLines[i].lineText, new Rectangle(consoleRectangle.X + textPadding, consoleRectangle.Y + lineHeight * lineCount, consoleRectangle.Width - textPadding * 2, lineHeight), , line.lineColor);
                     lineCount--;
-                }
-
-                desktop.Draw(spriteBatch);
+                }                
 
                 spriteBatch.End();
             }
