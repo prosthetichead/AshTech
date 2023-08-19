@@ -3,9 +3,11 @@ using AshTech.Draw;
 using AshTech.UI.Widgets;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,7 +18,7 @@ namespace AshTech.UI
     /// </summary>
     public class Desktop
     {
-        public Rectangle bounds;
+        public Rectangle bounds = new Rectangle();
         private SortedDictionary<string,UIWidget> widgets;
         public Game game { get { return _game; } }
         private Game _game;
@@ -25,6 +27,12 @@ namespace AshTech.UI
         private SpriteBox backgroundSpriteBox;
         //public SpriteBox BackgroundSpriteBox { get { return backgroundSpriteBox; } set { backgroundSpriteBox = value; } }
         public bool drawBackgroundSpriteBox = false;
+
+        public bool visible = true;
+
+        
+        private bool mouseInBounds; 
+        public bool MouseInBounds { get { return mouseInBounds; }  } 
 
         public bool focus { 
             get { return _focus; } 
@@ -39,7 +47,7 @@ namespace AshTech.UI
                 }
             } 
         }
-        public bool visible = true;
+        
         
 
         public Desktop(Rectangle bounds, Game game)
@@ -118,10 +126,26 @@ namespace AshTech.UI
         public void Update(GameTime gameTime)
         {
             if (visible)
-            { 
+            {
                 foreach (UIWidget widget in widgets.Values)
                 {
                     widget.Update(gameTime);
+                }                                
+            }
+        }
+
+        public void HandleInput(GameTime gameTime, InputManager input)
+        {
+            if (visible)
+            {
+
+                //mousePosition = input.MousePosition;
+                if (bounds.Contains(input.MousePosition))
+                    mouseInBounds = true;
+
+                foreach (UIWidget widget in widgets.Values)
+                {
+                    widget.HandleInput(gameTime, input);
                 }
             }
         }

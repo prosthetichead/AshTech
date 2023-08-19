@@ -37,28 +37,29 @@ namespace AshTech.Core
 
             Console.AddConsoleCommand(new ConsoleCommand("assets", "List asset keys for the provided asset type", "", a =>
             {
+                string assetType = "";
                 if (a!=null && a.Count() > 0)
                 {
-                    string assetType = a[0].ToLower();
-                    List<string> assetKeys = new List<string>();
-                    switch (assetType)
-                    {
-                        case "texture":
-                            assetKeys = textures.Keys.ToList();
-                            break;
-                        case "font":
-                            assetKeys = fonts.Keys.ToList();
-                            break;                        
-                        default:
-                            assetKeys = new string[]{ "Please Provide a Asset Type Parameter", "texture", "font"}.ToList();
-                            break;
-                    }
+                    assetType = a[0].ToLower();
+                }
+                List<string> assetKeys = new List<string>();
+                switch (assetType)
+                {
+                    case "texture":
+                        assetKeys = textures.Keys.ToList();
+                        break;
+                    case "font":
+                        assetKeys = fonts.Keys.ToList();
+                        break;                        
+                    default:
+                        assetKeys = new string[]{ "Please Provide a Asset Type Parameter", "assets texture", "assets font"}.ToList();
+                        break;
+                }
 
-                    foreach(string key in assetKeys)
-                    {
-                        Console.WriteLine(key);
-                    }
-                }            
+                foreach(string key in assetKeys)
+                {
+                    Console.WriteLine(key);
+                }         
             }));
         }
 

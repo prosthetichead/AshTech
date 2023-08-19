@@ -18,12 +18,15 @@ namespace AshTech.Debug
         public string description { get; set; }
         public string helpText { get; set; }
         public Action<string[]> commandAction { get; set; }
-        public ConsoleCommand(string command, string description, string helpText, Action<string[]> commandAction)
+        public bool secret { get; set; }
+
+        public ConsoleCommand(string command, string description, string helpText, Action<string[]> commandAction, bool secret = false)
         {
             this.command = command;
             this.description = description;
             this.helpText = helpText;
             this.commandAction = commandAction;
+            this.secret = secret;
         }
     }
     public enum ConsoleLineType
@@ -168,12 +171,16 @@ namespace AshTech.Debug
                         WriteLine(ConsoleLineType.error, "error parsing page number argument  " + a[0]);
                     }
                 }
-                WriteLine(" -- Commands Page " + page + " / " + maxPages + " -- ");
-                foreach (var command in consoleCommands.Skip((page - 1) * limitPerPage).Take(limitPerPage).ToList())
+                if (page > 0)
                 {
-                    WriteLine("[ " + command.command + " ]  ->  " + command.description);
+                    WriteLine(" -- Commands Page " + page + " / " + maxPages + " -- ");
+                    WriteLine(" -- for additonal command help enter COMMAND ? -- ");
+                    foreach (var command in consoleCommands.Where(w => w.secret == false).Skip((page - 1) * limitPerPage).Take(limitPerPage).ToList())
+                    {
+                        WriteLine("[ " + command.command + " ]  ->  " + command.description);
+                    }
+                    
                 }
-                WriteLine(" -- for additonal command help enter COMMAND ? -- ");
             }));
 
             consoleCommands.Add(new ConsoleCommand("clr", "Clear the console window", "Simply clears the console window of all previous lines", a =>

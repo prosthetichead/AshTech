@@ -11,6 +11,8 @@ namespace AshTech.Core
     public class AshTechEngine : DrawableGameComponent
     {
         
+
+
         public InputManager Input { get { return _input; } }
         private InputManager _input;
 
@@ -31,14 +33,14 @@ namespace AshTech.Core
 
         public AshTechEngine(Game game, GraphicsDeviceManager graphics) : base(game)
         {
-            _graphics = graphics;
-            _input = new InputManager();
+            _graphics = graphics;            
 
-            GameSettings.Setup(game, graphics);
             Console.Setup(game);
+            GameSettings.Setup(game, graphics);            
             AshAssetManager.Setup(game);
 
-            
+            _input = new InputManager();
+
         }
 
         public void AddScene(string sceneUniqueName, Scene scene)
@@ -122,7 +124,6 @@ namespace AshTech.Core
             //check if the conosle button is pressed
             if (Input.IsActionTriggered("AshTechConsoleToggle"))
             {
-                System.Diagnostics.Debug.WriteLine("console");
                 Console.displayConsole = !Console.displayConsole;
             }
          

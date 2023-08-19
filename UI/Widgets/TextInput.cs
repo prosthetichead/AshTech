@@ -19,24 +19,22 @@ namespace AshTech.UI.Widgets
 
         public int textPadding = 10;
 
-        public bool displayCursor = true;
+        
         public int cursorFlashSpeed = 350;
         public char cursor = '|';
         public string preText = ">";
         public string postText = "";
 
-        private float _timeSinceCursorFlash = 0;
-        private bool _displayCursor = false;
-        
+        private float timeSinceCursorFlash = 0;
+        private bool drawCursor = true;
 
 
-        
         public string value { get { return _value; } set { _value = value; ValueChanaged?.Invoke(this, EventArgs.Empty); }  }
         private string _value = "";
 
         public event EventHandler ValueChanaged;
         public event EventHandler PressedEnter;
-
+                
 
         public TextInput(Desktop desktop, Rectangle bounds, DesktopAnchor anchor, SpriteFontBase font, Alignment alignment) : base(desktop, bounds, anchor)
         {
@@ -77,11 +75,19 @@ namespace AshTech.UI.Widgets
 
         public override void Update(GameTime gameTime)
         {
-            _timeSinceCursorFlash += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-            if(_timeSinceCursorFlash >= cursorFlashSpeed)
+            timeSinceCursorFlash += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            if(timeSinceCursorFlash >= cursorFlashSpeed)
             {
-                _timeSinceCursorFlash = 0;
-                displayCursor = !displayCursor;
+                timeSinceCursorFlash = 0;
+                drawCursor = !drawCursor;
+            }
+        }
+
+        public override void HandleInput(GameTime gameTime, InputManager input)
+        {
+            if (focus)
+            {
+
             }
         }
 
@@ -89,8 +95,8 @@ namespace AshTech.UI.Widgets
         {
             if (visible)
             {
-                Rectangle drawPos = DrawPosition();
-                spriteBatch.DrawString(font, preText + value + (displayCursor ? cursor : "") + postText, rectangle: drawPos, alignment, new Color[] { Color.LimeGreen });           
+                Rectangle drawPos = ScreenBounds;
+                spriteBatch.DrawString(font, preText + value + (drawCursor ? cursor : "") + postText, rectangle: drawPos, alignment, new Color[] { Color.LimeGreen });           
             }
         }
     }

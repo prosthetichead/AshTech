@@ -4,6 +4,8 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using AshTech.Debug;
+using Console = AshTech.Debug.Console;
 
 namespace AshTech.Core
 {
@@ -19,8 +21,10 @@ namespace AshTech.Core
         private MouseState currentMouseState;
         private MouseState previousMouseState;
 
-        private Point currentMouseScreenPos;
-        private Point previousMouseScreenPos;
+        private Point currentMousePosition;
+        private Point previousMousePosition;
+
+        public Point MousePosition {get{return currentMousePosition; }}
 
 
         public Dictionary<string, InputAction> inputActions;
@@ -28,13 +32,18 @@ namespace AshTech.Core
         public InputManager()
         {
             inputActions = new Dictionary<string, InputAction>();
-        }
+
+            Console.AddConsoleCommand(new ConsoleCommand("inputs", "display inputs and actions", "", a =>
+            {
+
+            }));
+        }        
 
         ///<summary>
         ///Updates the keyboard and gamepad control states.
         ///Dont run this Game Screen Manager runs it for you
         ///</summary>
-        public void Update()
+        internal void Update()
         {
             previousKeyboardState = currentKeyboardState;
             previousGamePadState = currentGamePadState;
@@ -48,8 +57,8 @@ namespace AshTech.Core
             previousMouseState = currentMouseState;
             currentMouseState = Mouse.GetState();
 
-            previousMouseScreenPos = currentMouseScreenPos;
-            currentMouseScreenPos = currentMouseState.Position;
+            previousMousePosition = currentMousePosition;
+            currentMousePosition = currentMouseState.Position;
         }
 
         /// <summary>
@@ -262,10 +271,12 @@ namespace AshTech.Core
         }
 
 
-        public Vector2 GetMousePosition()
-        {
-            return currentMouseScreenPos.ToVector2();
-        }
+       // public Vector2 GetMousePosition()
+       // {
+       //     return currentMouseScreenPos.ToVector2();
+       // }
+
+
 
         public void AddAction(InputAction action)
         {

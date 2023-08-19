@@ -12,7 +12,8 @@ namespace AshTech.Core
 {
 
     public abstract class Scene
-    {        
+    {
+        
         internal AshTechEngine ashTech;
 
         public Game Game { get { return ashTech.Game; } }
