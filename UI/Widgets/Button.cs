@@ -3,6 +3,7 @@ using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using AshTech.Debug;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,15 +20,11 @@ namespace AshTech.UI.Widgets
         public string value;
 
         private bool mouseEnteredBoundsTest = false;
-        public event EventHandler MouseEnteredBounds;
-        public event EventHandler MouseExitedBounds;
-        public event EventHandler MouseLeftClick;
-
-        //public bool MouseInBounds { get { return ScreenBounds.Contains(desktop.mousePosition); } }
-
-        public Button(Desktop desktop, Rectangle bounds, DesktopAnchor anchor, SpriteFontBase font) : base(desktop, bounds, anchor)
+        
+        public Button(Rectangle bounds, SpriteFontBase font) : base(bounds)
         {
             this.font = font;
+
         }
 
         public override void Update(GameTime gameTime)
@@ -64,7 +61,7 @@ namespace AshTech.UI.Widgets
             {
                 if (!mouseEnteredBoundsTest)
                 {
-                    mouseEnteredBoundsTest = true;
+                    mouseEnteredBoundsTest = true;  
                     MouseEnteredBounds!.Invoke(this, EventArgs.Empty);
                 }
             }

@@ -36,10 +36,10 @@ namespace AshTech.UI.Widgets
         public event EventHandler PressedEnter;
                 
 
-        public TextInput(Desktop desktop, Rectangle bounds, DesktopAnchor anchor, SpriteFontBase font, Alignment alignment) : base(desktop, bounds, anchor)
+        public TextInput(Rectangle bounds, DesktopAnchor anchor, SpriteFontBase font, Alignment alignment) : base( bounds, anchor)
         {
             //setup listener for text input
-            desktop.game.Window.TextInput += Window_TextInput;
+            Window.TextInput += Window_TextInput;
             this.alignment = alignment;
             this.font = font;
         }

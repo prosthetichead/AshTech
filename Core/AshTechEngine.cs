@@ -4,15 +4,11 @@ using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using AshTech.Debug;
 using FontStashSharp;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace AshTech.Core
 {
     public class AshTechEngine : DrawableGameComponent
     {
-        
-
-
         public InputManager Input { get { return _input; } }
         private InputManager _input;
 
@@ -27,9 +23,7 @@ namespace AshTech.Core
         private string _activeSceneName = "";
         private Scene _activeScene;
 
-
         private SpriteFontBase font;
-
 
         public AshTechEngine(Game game, GraphicsDeviceManager graphics) : base(game)
         {
