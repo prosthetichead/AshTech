@@ -197,11 +197,11 @@ namespace AshTech.Debug
             PositionSize.Height = (int)(game.GraphicsDevice.Viewport.Height * .4f);            
 
             //sprite sheet
-            consoleTexture = AshAssetManager.LoadTexture2D("console/console.png", "ashtech.zip", "ashtech-console-texture");
+            consoleTexture = AssetManager.LoadTexture2D("console/console.png", "ashtech.zip", "ashtech-console-texture");
             consoleSpriteSheet = new SpriteSheet(16, 16, consoleTexture);
 
             //font
-            consoleFont = AshAssetManager.LoadFontSystem("fonts/m6x11.ttf", "ashtech.zip", assetKey: "ashtech-console-font").GetFont(12);
+            consoleFont = AssetManager.LoadFontSystem("fonts/m6x11.ttf", "ashtech.zip", assetKey: "ashtech-console-font").GetFont(12);
 
             //add widgets to desktop
             desktop.SetBackground(consoleSpriteSheet);

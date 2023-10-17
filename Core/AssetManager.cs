@@ -12,47 +12,53 @@ using System.IO;
 using Console = AshTech.Debug.Console;
 using FontStashSharp;
 using System.Drawing;
+using System.Xml.Linq;
 
 namespace AshTech.Core
 {
-    public static class AshAssetManager
+    public static class AssetManager
     {
-
+        
         private static Dictionary<string, Texture2D> textures;
         private static Dictionary<string, FontSystem> fonts;
         private static Dictionary<string, string> strings;
 
-
         private static Game game;
-        
+
         //public static List<string> SpriteFontBaseAssetKeys { get { return spriteFonts.Keys.ToList(); } }
-        public static List<string> Texture2DAssetKeys { get { return textures.Keys.ToList(); } }
+        //public static List<string> Texture2DAssetKeys { get { return textures.Keys.ToList(); } }
 
         internal static void Setup(Game game)
         {
-            AshAssetManager.game = game;
+            AssetManager.game = game;
             textures = new Dictionary<string, Texture2D>();
             fonts = new Dictionary<string, FontSystem>();
             strings = new Dictionary<string, string>();
 
-            Console.AddConsoleCommand(new ConsoleCommand("assets", "List asset keys for the provided asset type", "", a =>
-            {
+            Console.AddConsoleCommand(new ConsoleCommand("assets",
+                "List asset keys for the provided asset type (textures, fonts, strings)",
+                "Displays a list of all keys for assets currently in memmery. [assets [textures|fonts|strings]]", a =>
+            {                
                 string assetType = "";
                 if (a!=null && a.Count() > 0)
                 {
                     assetType = a[0].ToLower();
                 }
                 List<string> assetKeys = new List<string>();
+
                 switch (assetType)
                 {
-                    case "texture":
+                    case "textures":
                         assetKeys = textures.Keys.ToList();
                         break;
-                    case "font":
+                    case "fonts":
                         assetKeys = fonts.Keys.ToList();
-                        break;                        
+                        break;
+                    case "strings":
+                        assetKeys = strings.Keys.ToList();
+                        break;
                     default:
-                        assetKeys = new string[]{ "Please Provide a Asset Type Parameter", "assets texture", "assets font"}.ToList();
+                        assetKeys = new string[]{ "Please Provide a Asset Type Parameter", "assets textures", "assets fonts", "assets strings"}.ToList();
                         break;
                 }
 
@@ -71,12 +77,10 @@ namespace AshTech.Core
                 if (File.Exists(zipPath))
                 {
                     ZipArchive zipArchive = ZipFile.OpenRead(zipPath);
-                    foreach (var entry in zipArchive.Entries)
+                    if(zipArchive.Entries.Any(w => w.FullName.Equals(assetName)))
                     {
-                        if (entry.FullName.Equals(assetName))
-                        {
-                            return entry.Open();
-                        }
+                        var entry = zipArchive.Entries.FirstOrDefault(w=>w.FullName.Equals(assetName));
+                        return entry.Open();
                     }
                 }
             }
@@ -99,7 +103,12 @@ namespace AshTech.Core
 
             var stream = LoadStream(zipPath, assetName);
             StreamReader sr = new StreamReader(stream);
-            return sr.ReadToEnd();
+            var data = sr.ReadToEnd();
+            if(storeAsset)
+            {
+                strings[assetKey] = data;
+            }
+            return data;
         }
 
         public static Texture2D LoadTexture2D(string assetName, string zipPath = null, string assetKey = null, bool storeAsset = true, bool overwrite = false)
