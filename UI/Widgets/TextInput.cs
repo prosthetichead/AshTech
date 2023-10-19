@@ -36,15 +36,17 @@ namespace AshTech.UI.Widgets
         public event EventHandler PressedEnter;
                 
 
-        public TextInput(string name, Rectangle bounds, UIWidgetAnchor anchor, SpriteFontBase font, Alignment alignment) : base(name, bounds, anchor)
-        {            
+        public TextInput(string name, Rectangle bounds, DesktopAnchor anchor, SpriteFontBase font, Alignment alignment) : base(name, bounds, anchor)
+        {
+            //setup listener for text input
+           
             this.alignment = alignment;
             this.font = font;
         }
 
         private void Window_TextInput(object sender, TextInputEventArgs e)
         {
-            if (focus)
+            if (Focus)
             {
                 char character = e.Character;
                 var key = e.Key;
@@ -71,7 +73,12 @@ namespace AshTech.UI.Widgets
             }
         }
 
-        public override void Update(GameTime gameTime)
+        internal override void DesktopConnected()
+        {
+            desktop.game.Window.TextInput += Window_TextInput;
+        }
+
+        internal override void Update(GameTime gameTime)
         {
             timeSinceCursorFlash += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             if(timeSinceCursorFlash >= cursorFlashSpeed)
@@ -81,19 +88,19 @@ namespace AshTech.UI.Widgets
             }
         }
 
-        public override void HandleInput(GameTime gameTime, InputManager input)
+        internal override void HandleInput(GameTime gameTime, InputManager input)
         {
-            if (focus)
+            if (Focus)
             {
 
             }
         }
 
-        public override void Draw(SpriteBatch spriteBatch, Rectangle? drawBounds = null)
+        internal override void Draw(SpriteBatch spriteBatch)
         {
-            if (visible)
+            if (Visible)
             {
-                Rectangle drawPos = ScreenBounds;
+                Rectangle drawPos = DesktopBounds;
                 spriteBatch.DrawString(font, preText + value + (drawCursor ? cursor : "") + postText, rectangle: drawPos, alignment, new Color[] { Color.LimeGreen });           
             }
         }

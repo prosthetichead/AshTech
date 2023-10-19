@@ -3,7 +3,6 @@ using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using AshTech.Debug;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,59 +18,28 @@ namespace AshTech.UI.Widgets
         public Color[] textColor = { Color.Black };
         public string value;
 
-        private bool mouseEnteredBoundsTest = false;
         
-        public Button(Rectangle bounds, SpriteFontBase font) : base(bounds)
+       
+
+        //public bool MouseInBounds { get { return ScreenBounds.Contains(desktop.mousePosition); } }
+
+        public Button(string name, Rectangle bounds, DesktopAnchor anchor, SpriteFontBase font) : base(name, bounds, anchor)
         {
             this.font = font;
-
         }
 
-        public override void Update(GameTime gameTime)
+        internal override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
+
             
         }
-        public override void Draw(SpriteBatch spriteBatch)
+        internal override void Draw(SpriteBatch spriteBatch)
         {
-            if (visible)
+            if (Visible)
             {
-                Rectangle drawPos = ScreenBounds;
+                Rectangle drawPos = DesktopBounds;
                 spriteBatch.DrawString(font, value, rectangle: drawPos, textAlignment, textColor);
                 
-            }
-        }
-
-        public override void HandleInput(GameTime gameTime, InputManager input)
-        {
-            if (visible)
-            {
-                //mousePosition = input.MousePosition;
-                if (bounds.Contains(input.MousePosition))
-                    mouseInBounds = true;
-                else
-                    mouseInBounds = false;
-            }
-            else
-            {
-                mouseInBounds = false;
-            }
-
-            if (MouseInBounds)
-            {
-                if (!mouseEnteredBoundsTest)
-                {
-                    mouseEnteredBoundsTest = true;  
-                    MouseEnteredBounds!.Invoke(this, EventArgs.Empty);
-                }
-            }
-            else
-            {
-                if (mouseEnteredBoundsTest)
-                {
-                    mouseEnteredBoundsTest = false;
-                    MouseExitedBounds!.Invoke(this, EventArgs.Empty);
-                }
             }
         }
     }

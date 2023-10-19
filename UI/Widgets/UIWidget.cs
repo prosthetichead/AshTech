@@ -11,82 +11,133 @@ using System.Threading.Tasks;
 
 namespace AshTech.UI.Widgets
 {
-
+    public enum DesktopAnchor
+    {
+        TopLeft,
+        TopRight,  
+        BottomLeft,
+        BottomRight,
+        BottomTop,  
+        BottomBottom,
+        Center,
+    }
 
     public abstract class UIWidget
-    {           
-        public Rectangle Bounds { get { return bounds; } set { bounds = value; } }
-        private Rectangle bounds;
-                
-        public bool Focus { set { focus = value; } get { return focus; } }
+    {
+        //public Desktop Desktop { get {  return Desktop; } }
+        protected Desktop desktop;
+        protected Rectangle bounds;
+       
+        public bool Focus { get { return desktop.Focus ? focus : false; } set { focus = value; } } 
         private bool focus;
-
-        public bool Visible { set { visible = value; } get { return visible; } }
+        public bool Visible { get { return desktop.visible ? visible : false; } set { visible = value; } }    
         private bool visible;
 
-        public int DrawOrder { get { return drawOrder; } set { drawOrder = value; } }
-        private int drawOrder;
+        public int drawOrder = 0;
 
-        public int SelectOrder { get { return selectOrder; } set { selectOrder = value; } }
-        private int selectOrder;
+        public DesktopAnchor anchor;
 
-
-        public string Name { set { name = value; } get { return name; } }
+        public string Name { get { return name; } }
         private string name;
+        
+        //public SpriteBox backgroundSpriteBox;
 
-        public UIWidget(string name, Rectangle bounds, int drawOrder = 0, int selectOrder = 0)
+        public bool MouseInBounds { get { return Visible ? mouseInBounds : false; } }
+        private bool mouseInBounds;
+        private bool mouseInBoundsTest = false;
+        private bool mouseOutBoundsTest = false;
+
+        public event EventHandler MouseEnteredBounds;
+        public event EventHandler MouseExitedBounds;
+        public event EventHandler MouseLeftClick;
+
+        public UIWidget(string name, Rectangle bounds, DesktopAnchor anchor)
         {
+            
             this.bounds = bounds;
-            this.name = name;
-            this.drawOrder = drawOrder;
-            this.selectOrder = selectOrder;
             focus = false;
-            visible = false;
+            visible = true;
+            this.anchor = anchor;
+            this.name = name;
+
+            MouseEnteredBounds += (obj, args) => { Debug.Console.WriteLine("Mouse Entered Bounds of UI Widget " + name); };
+            MouseEnteredBounds += (obj, args) => { Debug.Console.WriteLine("Mouse Exited Bounds of UI Widget " + name); };
+
         }
 
-        public abstract void LoadContent();
-        
-        public abstract void UnloadContent();
-
-        internal virtual void Update(GameTime gameTime)
+        internal void ConnectDesktop(Desktop desktop)
         {
-            //check if mouse is in bounds
-            if(visible)
-            {
+            this.desktop = desktop;
+            DesktopConnected();
+        }
 
+        internal virtual void DesktopConnected()
+        {
+
+        }
+
+        internal abstract void Update(GameTime gameTime);
+
+        internal virtual void HandleInput(GameTime gameTime, InputManager input)
+        {
+            //Check if mouse is In or Out bounds and fire the event
+            if (Visible)
+            {
+                if (DesktopBounds.Contains(input.MousePosition))
+                    mouseInBounds = true;
+                else
+                    mouseInBounds = false;
+
+                if (MouseInBounds && !mouseInBoundsTest)
+                {
+                    mouseInBoundsTest = true;
+                    mouseOutBoundsTest = false;
+                    MouseEnteredBounds?.Invoke(this, EventArgs.Empty);
+                }
+                else if (!MouseInBounds && mouseInBoundsTest && !mouseOutBoundsTest)
+                {
+                    mouseInBoundsTest = false;
+                    mouseOutBoundsTest = true;
+                    MouseExitedBounds?.Invoke(this, EventArgs.Empty);
+                }
+            }
+            else
+            {
+                mouseInBounds = false;
+                mouseInBoundsTest = false;
+                mouseOutBoundsTest = false;
             }
         }
 
-        internal abstract void HandleInput(GameTime gameTime, InputManager input);
-
         internal abstract void Draw(SpriteBatch spriteBatch);
 
-        //{
-        //    get
-        //    {
-        //        switch (anchor)
-        //        {
-        //            case DesktopAnchor.TopLeft:
-        //                return new Rectangle(desktop.bounds.X + bounds.X, desktop.bounds.Y + bounds.Y, bounds.Width, bounds.Height);
-        //            case DesktopAnchor.TopRight:
-        //                return new Rectangle((desktop.bounds.X + desktop.bounds.Width) - bounds.Width - bounds.X, desktop.bounds.Y + bounds.Y, bounds.Width, bounds.Height);
-        //            case DesktopAnchor.BottomLeft:
-        //                return new Rectangle(desktop.bounds.X + bounds.X, (desktop.bounds.Y + desktop.bounds.Height) - bounds.Height - bounds.Y, bounds.Width, bounds.Height);
-        //            case DesktopAnchor.BottomRight:
-        //                break;
-        //            case DesktopAnchor.BottomTop:
-        //                break;
-        //            case DesktopAnchor.BottomBottom:
-        //                break;
-        //            case DesktopAnchor.Center:
-        //                break;
-        //            default:
-        //                break;
-        //        }
+        internal Rectangle DesktopBounds
+        {
+            get
+            {
+                switch (anchor)
+                {
+                    case DesktopAnchor.TopLeft:
+                        return new Rectangle(desktop.bounds.X + bounds.X, desktop.bounds.Y + bounds.Y, bounds.Width, bounds.Height);
+                    case DesktopAnchor.TopRight:
+                        return new Rectangle((desktop.bounds.X + desktop.bounds.Width) - bounds.Width - bounds.X, desktop.bounds.Y + bounds.Y, bounds.Width, bounds.Height);
+                    case DesktopAnchor.BottomLeft:
+                        return new Rectangle(desktop.bounds.X + bounds.X, (desktop.bounds.Y + desktop.bounds.Height) - bounds.Height - bounds.Y, bounds.Width, bounds.Height);
+                    case DesktopAnchor.BottomRight:
+                        break;
+                    case DesktopAnchor.BottomTop:
+                        break;
+                    case DesktopAnchor.BottomBottom:
+                        break;
+                    case DesktopAnchor.Center:
+                        break;
+                    default:
+                        break;
+                }
 
-        //        return bounds;
-        //    }
-        //}
+                return bounds;
+            }
+        }
     }
 
     
