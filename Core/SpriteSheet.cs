@@ -22,17 +22,7 @@ namespace AshTech.Core
             this.singleSpriteHeight = singleSpriteHeight;
             this.texture = texture;
         }
-
-        public void LoadContent()
-        {
-
-        }
-
-        public void UnloadContent()
-        {
-
-        }
-
+                
         private Rectangle GetSourceRectangle(int spriteNumber)
         {
             int rectangleX = spriteNumber % (texture.Width / singleSpriteWidth);
