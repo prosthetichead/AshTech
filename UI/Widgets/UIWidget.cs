@@ -11,46 +11,56 @@ using System.Threading.Tasks;
 
 namespace AshTech.UI.Widgets
 {
-    public enum UIWidgetAnchor
-    {
-        TopLeft,
-        TopRight,
-        BottomLeft,
-        BottomRight,
-        BottomTop,
-        BottomBottom,
-        Center,
-    }
+
 
     public abstract class UIWidget
-    {
-        public event EventHandler MouseEnteredBounds;
-        public event EventHandler MouseExitedBounds;
-        public event EventHandler MouseLeftClick;
+    {           
+        public Rectangle Bounds { get { return bounds; } set { bounds = value; } }
+        private Rectangle bounds;
+                
+        public bool Focus { set { focus = value; } get { return focus; } }
+        private bool focus;
 
-        internal Rectangle bounds;
-        public bool focus;
-        public bool visible;
-        
-        public SpriteBox backgroundSpriteBox;
-       
-        internal bool mouseInBounds;
-        public bool MouseInBounds { get { return mouseInBounds; } }
+        public bool Visible { set { visible = value; } get { return visible; } }
+        private bool visible;
 
-        public UIWidget(string name, UIElement element, Rectangle bounds, UIWidgetAnchor anchor)
+        public int DrawOrder { get { return drawOrder; } set { drawOrder = value; } }
+        private int drawOrder;
+
+        public int SelectOrder { get { return selectOrder; } set { selectOrder = value; } }
+        private int selectOrder;
+
+
+        public string Name { set { name = value; } get { return name; } }
+        private string name;
+
+        public UIWidget(string name, Rectangle bounds, int drawOrder = 0, int selectOrder = 0)
         {
             this.bounds = bounds;
+            this.name = name;
+            this.drawOrder = drawOrder;
+            this.selectOrder = selectOrder;
             focus = false;
-            visible = true;
+            visible = false;
         }
 
-        public abstract void Update(GameTime gameTime);
+        public abstract void LoadContent();
+        
+        public abstract void UnloadContent();
 
-        public abstract void HandleInput(GameTime gameTime, InputManager input);
+        internal virtual void Update(GameTime gameTime)
+        {
+            //check if mouse is in bounds
+            if(visible)
+            {
 
-        public abstract void Draw(SpriteBatch spriteBatch);
+            }
+        }
 
-        //public Rectangle ScreenBounds
+        internal abstract void HandleInput(GameTime gameTime, InputManager input);
+
+        internal abstract void Draw(SpriteBatch spriteBatch);
+
         //{
         //    get
         //    {

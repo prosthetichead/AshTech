@@ -29,7 +29,7 @@ namespace AshTech.UI.Widgets
 
         public override void Update(GameTime gameTime)
         {
-
+            base.Update(gameTime);
             
         }
         public override void Draw(SpriteBatch spriteBatch)

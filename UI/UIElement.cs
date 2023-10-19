@@ -1,6 +1,7 @@
 ﻿using AshTech.Core;
 using AshTech.Draw;
 using AshTech.UI.Widgets;
+using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -13,38 +14,94 @@ using System.Threading.Tasks;
 
 namespace AshTech.UI
 {
+    public enum UIAnchor
+    {
+        TopLeft,
+        TopRight,
+        BottomLeft,
+        BottomRight,
+        BottomTop,
+        BottomBottom,
+        Center,
+    }
 
-
-
-    //    /// <summary>
-    //    /// Desktop is a collection of UI Widgets
-    //    /// </summary>
     public class UIElement
     {
-        //        public Rectangle bounds = new Rectangle();
+        public Rectangle Bounds { get { return bounds; } set { bounds = value; } }
+        private Rectangle bounds;
+
+        public bool Focus { 
+            set {
+                focus = value;
+                if (!focus)
+                {
+                    UnfocusAllWidgets();
+                }
+            } 
+            get { return focus; } }
+        private bool focus;
+        public bool Visible { set { visible = value; } get { return visible; } }
+        private bool visible;
+
         private Dictionary<string, UIWidget> widgets;
-        private Game game;
+        private Scene scene;
 
-        public UIElement(Game game)
+        public UIElement(Scene scene, Rectangle bounds)
         {
+            this.bounds = bounds;
+            this.scene = scene;
+            
+            focus = false;
+            visible = false;
 
+            widgets = new Dictionary<string, UIWidget>();
+        }
+
+        public void AddWidget(UIWidget widget)
+        {
+            widgets.Add(widget.Name, widget);
+        }
+
+        public UIWidget GetWidget(string widgetName)
+        {
+            if (widgets.ContainsKey(widgetName))
+                return widgets.GetValueOrDefault(widgetName);
+            else
+                throw new ArgumentException("Widget not found with name " + widgetName);
+        }
+
+        public void UnfocusAllWidgets()
+        {
+            foreach (UIWidget widget in widgets.Values)
+            {
+                widget.Focus = false;
+            }
+        }
+
+        public void FocusWidget(string widgetName)
+        {    
+            try
+            {
+                UIWidget widget = GetWidget(widgetName);
+                FocusWidget(widget);
+            }
+            catch (Exception)
+            {
+                throw;
+            }      
+        }
+
+        public void FocusWidget(UIWidget widget)
+        {
+            UnfocusAllWidgets();
+            widget.Focus = true;
+            focus = true;
         }
 
 
     }
 }
-//        private Scene scene;
 
-//        private bool _focus = false;
-
-//        private SpriteBox backgroundSpriteBox;
-
-//        public bool drawBackgroundSpriteBox = false;
-
-//        public bool visible = true;
-
-//        private bool mouseInBounds;
-//        public bool MouseInBounds { get { return mouseInBounds; } }
 
 //        public bool focus {
 //            get { return _focus; }
@@ -83,10 +140,7 @@ namespace AshTech.UI
 //        }
 
 
-//        public void AddWidget(string widgetName, UIWidget widget)
-//        {
-//            widgets.Add(widgetName, widget);
-//        }        
+        
 
 //        public UIWidget GetWidget(string widgetName)
 //        {

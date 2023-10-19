@@ -36,10 +36,8 @@ namespace AshTech.UI.Widgets
         public event EventHandler PressedEnter;
                 
 
-        public TextInput(Rectangle bounds, DesktopAnchor anchor, SpriteFontBase font, Alignment alignment) : base( bounds, anchor)
-        {
-            //setup listener for text input
-            Window.TextInput += Window_TextInput;
+        public TextInput(string name, Rectangle bounds, UIWidgetAnchor anchor, SpriteFontBase font, Alignment alignment) : base(name, bounds, anchor)
+        {            
             this.alignment = alignment;
             this.font = font;
         }
@@ -91,7 +89,7 @@ namespace AshTech.UI.Widgets
             }
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch, Rectangle? drawBounds = null)
         {
             if (visible)
             {

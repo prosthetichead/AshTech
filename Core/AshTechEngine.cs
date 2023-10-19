@@ -9,6 +9,8 @@ namespace AshTech.Core
 {
     public class AshTechEngine : DrawableGameComponent
     {
+        
+
         public InputManager Input { get { return _input; } }
         private InputManager _input;
 
@@ -34,7 +36,6 @@ namespace AshTech.Core
             AssetManager.Setup(game);
 
             _input = new InputManager();
-
         }
 
         public void AddScene(string sceneUniqueName, Scene scene)

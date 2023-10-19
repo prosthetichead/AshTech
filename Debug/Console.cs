@@ -105,7 +105,7 @@ namespace AshTech.Debug
 
         private static Game game;
 
-        private static Desktop desktop;
+        private static UIElement ConsoleUI;
         private static TextInput consoleInput;
 
         private static bool textInput { get { if (consoleState == ConsoleState.open) return true; else return false; } }
@@ -147,8 +147,8 @@ namespace AshTech.Debug
             consoleLine = new ConsoleLine() { lineType = ConsoleLineType.normal, lineText = "== enter ? for list of avalable commands ==" };
             consoleLines.Add(consoleLine);
 
-            //setup ui desktop
-            desktop = new Desktop(PositionSize, game);
+            //setup ui element 
+            ConsoleUI = new UIElement(game, PositionSize);
             
             GameSettings.SettingsChanaged += ScreenResized;
 
