@@ -34,7 +34,7 @@ namespace AshTech.UI
         private bool mouseInBounds; 
         public bool MouseInBounds { get { return mouseInBounds; }  } 
 
-        public bool focus { 
+        public bool Focus { 
             get { return _focus; } 
             set {
                 _focus = value;
@@ -42,7 +42,7 @@ namespace AshTech.UI
                 {
                     foreach (UIWidget widget in widgets.Values)
                     {
-                        widget.focus = false;
+                        widget.Focus = false;
                     }
                 }
             } 
@@ -73,12 +73,11 @@ namespace AshTech.UI
         }
 
 
-        public void AddWidget(string widgetName, UIWidget widget)
-        {
-            widget.desktop = this;
-            widgets.Add(widgetName, widget);
-            
-        }        
+        public void AddWidget(UIWidget widget)
+        {            
+            widgets.Add(widget.Name, widget);
+            widget.ConnectDesktop(this);
+        }
 
         public UIWidget GetWidget(string widgetName)
         {
@@ -93,7 +92,7 @@ namespace AshTech.UI
             UIWidget widget = GetWidget(widgetName);
             if (widget != null)
             {
-                widget.visible = true;
+                widget.Visible = true;
             }
         }
         public void HideWidget(string widgetName)
@@ -101,7 +100,7 @@ namespace AshTech.UI
             UIWidget widget = GetWidget(widgetName);
             if (widget != null)
             {
-                widget.visible = false;
+                widget.Visible = false;
             }
         }
 
@@ -110,7 +109,7 @@ namespace AshTech.UI
             UIWidget widget = GetWidget( widgetName);
             if(widget != null)
             {
-                widget.focus = true;
+                widget.Focus = true;
             }
         }
 
@@ -119,7 +118,7 @@ namespace AshTech.UI
             UIWidget widget = GetWidget(widgetName);
             if (widget != null)
             {
-                widget.focus = false;
+                widget.Focus = false;
             }
         }
 

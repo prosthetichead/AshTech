@@ -37,7 +37,7 @@ namespace AshTech.Core
 
             Console.Setup(game);
             GameSettings.Setup(game, graphics);            
-            AshAssetManager.Setup(game);
+            AssetManager.Setup(game);
 
             _input = new InputManager();
 
@@ -90,7 +90,7 @@ namespace AshTech.Core
             Input.AddAction(new InputAction("AshTechConsoleToggle", "Debug Console", new Keys[] { Keys.OemTilde }) { hiddenAction = true });
 
             //load the font to write engine info using
-            font = AshAssetManager.LoadFontSystem("fonts/m6x11.ttf", "ashtech.zip", "ashtech-default-font").GetFont(16);
+            font = AssetManager.LoadFontSystem("fonts/m6x11.ttf", "ashtech.zip", "ashtech-default-font").GetFont(16);
 
             //setup Console Commands
             Console.AddConsoleCommand(new ConsoleCommand("scenes", "List scenes and details about each scene", "", a =>
