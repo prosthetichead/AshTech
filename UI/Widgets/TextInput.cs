@@ -1,5 +1,6 @@
 ﻿using AshTech.Core;
 using AshTech.Debug;
+using AshTech.Draw;
 using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,7 +15,7 @@ namespace AshTech.UI.Widgets
 {
     public class TextInput : UIWidget
     {
-        private SpriteFontBase font;
+       
         public Alignment alignment;
 
         public int textPadding = 10;
@@ -36,12 +37,9 @@ namespace AshTech.UI.Widgets
         public event EventHandler PressedEnter;
                 
 
-        public TextInput(string name, Rectangle bounds, DesktopAnchor anchor, SpriteFontBase font, Alignment alignment) : base(name, bounds, anchor)
+        public TextInput(string name, Rectangle bounds, DesktopAnchor anchor) : base(name, bounds, anchor)
         {
-            //setup listener for text input
-           
-            this.alignment = alignment;
-            this.font = font;
+                       
         }
 
         private void Window_TextInput(object sender, TextInputEventArgs e)
@@ -101,7 +99,7 @@ namespace AshTech.UI.Widgets
             if (Visible)
             {
                 Rectangle drawPos = DesktopBounds;
-                spriteBatch.DrawString(font, preText + value + (drawCursor ? cursor : "") + postText, rectangle: drawPos, alignment, new Color[] { Color.LimeGreen });           
+                spriteBatch.DrawString(Font, preText + value + (drawCursor ? cursor : "") + postText, rectangle: drawPos, alignment, new Color[] { Color.LimeGreen });           
             }
         }
     }

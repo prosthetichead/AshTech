@@ -1,4 +1,4 @@
-﻿using AshTech.Core;
+﻿using AshTech.Draw;
 using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,20 +12,14 @@ namespace AshTech.UI.Widgets
 {
     public class Button : UIWidget
     {
-
-        public  SpriteFontBase font;
-        public Alignment textAlignment = Alignment.CenterCenter;
         public Color[] textColor = { Color.Black };
         public string value;
 
-        
-       
-
         //public bool MouseInBounds { get { return ScreenBounds.Contains(desktop.mousePosition); } }
 
-        public Button(string name, Rectangle bounds, DesktopAnchor anchor, SpriteFontBase font) : base(name, bounds, anchor)
+        public Button(string name, Rectangle bounds, DesktopAnchor anchor) : base(name, bounds, anchor)
         {
-            this.font = font;
+            TextAlignment = Alignment.CenterCenter;
         }
 
         internal override void Update(GameTime gameTime)
@@ -38,7 +32,7 @@ namespace AshTech.UI.Widgets
             if (Visible)
             {
                 Rectangle drawPos = DesktopBounds;
-                spriteBatch.DrawString(font, value, rectangle: drawPos, textAlignment, textColor);
+                spriteBatch.DrawString(Font, value, rectangle: drawPos, TextAlignment, textColor);
                 
             }
         }

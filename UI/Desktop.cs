@@ -22,7 +22,7 @@ namespace AshTech.UI
         private SortedDictionary<string,UIWidget> widgets;
         public Game game { get { return _game; } }
         private Game _game;
-        private bool _focus = false;
+        private bool _focus = true;
 
         private SpriteBox backgroundSpriteBox;
         //public SpriteBox BackgroundSpriteBox { get { return backgroundSpriteBox; } set { backgroundSpriteBox = value; } }
@@ -55,6 +55,7 @@ namespace AshTech.UI
             this.bounds = bounds;
             widgets = new SortedDictionary<string, UIWidget>();
             _game = game;
+            _focus = true;
         }
 
         public void SetBackground(Texture2D backgroundTexture, int spriteSize)
@@ -106,6 +107,7 @@ namespace AshTech.UI
 
         public void FocusWidget(string widgetName)
         {
+            Focus = true;
             UIWidget widget = GetWidget( widgetName);
             if(widget != null)
             {
@@ -124,7 +126,7 @@ namespace AshTech.UI
 
         public void Update(GameTime gameTime)
         {
-            if (visible)
+            if (visible && Focus)
             {
                 foreach (UIWidget widget in widgets.Values)
                 {
@@ -135,9 +137,8 @@ namespace AshTech.UI
 
         public void HandleInput(GameTime gameTime, InputManager input)
         {
-            if (visible)
-            {
-
+            if (visible && Focus)
+            {                
                 //mousePosition = input.MousePosition;
                 if (bounds.Contains(input.MousePosition))
                     mouseInBounds = true;

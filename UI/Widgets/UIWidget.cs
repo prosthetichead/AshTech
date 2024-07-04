@@ -1,5 +1,6 @@
 ﻿using AshTech.Core;
 using AshTech.Draw;
+using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -27,9 +28,16 @@ namespace AshTech.UI.Widgets
         //public Desktop Desktop { get {  return Desktop; } }
         protected Desktop desktop;
         protected Rectangle bounds;
-       
+        
+        public SpriteFontBase Font { get {  return font; } set { font = value; } }
+        private SpriteFontBase font;
+
+        public Alignment TextAlignment { get { return textAlignment; } set { textAlignment = value; } }
+        private Alignment textAlignment;        
+
         public bool Focus { get { return desktop.Focus ? focus : false; } set { focus = value; } } 
         private bool focus;
+
         public bool Visible { get { return desktop.visible ? visible : false; } set { visible = value; } }    
         private bool visible;
 
@@ -53,7 +61,9 @@ namespace AshTech.UI.Widgets
 
         public UIWidget(string name, Rectangle bounds, DesktopAnchor anchor)
         {
-            
+            font = AssetManager.LoadFontSystem("fonts/m6x11.ttf", "ashtech.zip", assetKey: "ashtech-console-font").GetFont(12);
+            textAlignment = Alignment.CenterLeft;
+
             this.bounds = bounds;
             focus = false;
             visible = true;
@@ -61,7 +71,7 @@ namespace AshTech.UI.Widgets
             this.name = name;
 
             MouseEnteredBounds += (obj, args) => { Debug.Console.WriteLine("Mouse Entered Bounds of UI Widget " + name); };
-            MouseEnteredBounds += (obj, args) => { Debug.Console.WriteLine("Mouse Exited Bounds of UI Widget " + name); };
+            MouseExitedBounds += (obj, args) => { Debug.Console.WriteLine("Mouse Exited Bounds of UI Widget " + name); };
 
         }
 

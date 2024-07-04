@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-namespace AshTech.Core
+namespace AshTech.Draw
 {
     public class SpriteSheet
     {
@@ -15,14 +15,14 @@ namespace AshTech.Core
 
         public int SpriteWidth { get { return singleSpriteWidth; } }
         public int SpriteHeight { get { return singleSpriteHeight; } }
-            
+
         public SpriteSheet(int singleSpriteWidth, int singleSpriteHeight, Texture2D texture)
         {
             this.singleSpriteWidth = singleSpriteWidth;
             this.singleSpriteHeight = singleSpriteHeight;
             this.texture = texture;
         }
-                
+
         private Rectangle GetSourceRectangle(int spriteNumber)
         {
             int rectangleX = spriteNumber % (texture.Width / singleSpriteWidth);
@@ -36,7 +36,7 @@ namespace AshTech.Core
             spriteBatch.Draw(texture, new Rectangle((int)position.X, (int)position.Y, singleSpriteWidth, singleSpriteHeight), GetSourceRectangle(frameNumber), color, rotation, origin, spriteEffect, depth);
         }
 
-        public void Draw(SpriteBatch spriteBatch, int frameNumber, Rectangle rectangle,Color color, float rotation, Vector2 origin, SpriteEffects spriteEffect, float depth)
+        public void Draw(SpriteBatch spriteBatch, int frameNumber, Rectangle rectangle, Color color, float rotation, Vector2 origin, SpriteEffects spriteEffect, float depth)
         {
             spriteBatch.Draw(texture, rectangle, GetSourceRectangle(frameNumber), color, rotation, origin, spriteEffect, depth);
         }

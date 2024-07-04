@@ -9,6 +9,8 @@ using AshTech.Core;
 using FontStashSharp;
 using AshTech.UI;
 using AshTech.UI.Widgets;
+using System.Reflection.Metadata;
+using AshTech.Draw;
 
 namespace AshTech.Debug
 {
@@ -207,7 +209,7 @@ namespace AshTech.Debug
             desktop.SetBackground(consoleSpriteSheet);
 
             desktop.bounds = PositionSize;
-            consoleInput = new TextInput("debugTextBox", new Rectangle(10, 0, 200, 18), DesktopAnchor.BottomLeft, consoleFont, Alignment.TopLeft);
+            consoleInput = new TextInput("debugTextBox", new Rectangle(10, 0, 200, 18), DesktopAnchor.BottomLeft);
             desktop.AddWidget(consoleInput);
             consoleInput.PressedEnter += TextInput_PressedEnter;
         }
@@ -285,13 +287,12 @@ namespace AshTech.Debug
             if (startAnimating)
             {
                 desktop.bounds = PositionSize;
+                desktop.Focus = false;
                 if (consoleState == ConsoleState.opening)
                 {
                     desktop.bounds.Y = 0 - (PositionSize.Height+10) ;
                 }
-                startAnimating = false;
-
-                consoleInput.Focus = false;
+                startAnimating = false;                
                 consoleInput.value = "";
             }
              
@@ -303,7 +304,8 @@ namespace AshTech.Debug
                 {
                     consoleState = ConsoleState.open;
                     desktop.bounds.Y = PositionSize.Y;
-                    consoleInput.Focus = true;
+
+                    desktop.FocusWidget("debugTextBox");
                 }
             }
             else if (consoleState == ConsoleState.closing)
@@ -313,16 +315,21 @@ namespace AshTech.Debug
                 {
                     consoleState = ConsoleState.closed;
                     desktop.bounds.Y = 0 - (PositionSize.Height + 10);
-                    
+                    desktop.Focus = false;
                 }
             }
             else if(consoleState == ConsoleState.open)
             {
                 desktop.bounds = PositionSize;
-            }
-
-            desktop.Update(gameTime);
+                desktop.Update(gameTime);
+            }            
         }
+
+        internal static void HandleInput(GameTime gameTime, InputManager input)
+        {
+
+        }
+
 
         internal static void Draw(SpriteBatch spriteBatch)
         {

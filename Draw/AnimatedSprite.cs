@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Console = AshTech.Debug.Console;
 
-namespace AshTech.Core
+namespace AshTech.Draw
 {
     public class AnimatedSprite
     {
@@ -24,7 +24,7 @@ namespace AshTech.Core
             {
                 this.name = name;
                 frames = new List<SpriteFrame>();
-                foreach(int frameNumber in frameNumbers)
+                foreach (int frameNumber in frameNumbers)
                 {
                     SpriteFrame spriteFrame = new SpriteFrame(frameNumber, milliseconds);
                     frames.Add(spriteFrame);
@@ -45,7 +45,7 @@ namespace AshTech.Core
             public void NextFrame()
             {
                 currentFrameIndex++;
-                if(currentFrameIndex >= frames.Count)
+                if (currentFrameIndex >= frames.Count)
                 {
                     currentFrameIndex = 0;
                 }
@@ -78,7 +78,7 @@ namespace AshTech.Core
         private SpriteState currentSpriteState;
 
         public string CurrentState { get { return currentSpriteState != null ? currentSpriteState.name : "null"; } }
-        
+
         public AnimatedSprite(SpriteSheet spriteSheet)
         {
             this.spriteSheet = spriteSheet;
@@ -93,7 +93,7 @@ namespace AshTech.Core
 
         public void AddState(SpriteState spriteState)
         {
-            states.Add(spriteState.name, spriteState); 
+            states.Add(spriteState.name, spriteState);
         }
 
         public void AddState(string name, float milliseconds, params int[] frameNumbers)
@@ -121,10 +121,10 @@ namespace AshTech.Core
 
         public void Update(GameTime gameTime)
         {
-            if(currentSpriteState != null)
+            if (currentSpriteState != null)
             {
                 currentSpriteState.millisecondsOnFrame += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-                if(currentSpriteState.millisecondsOnFrame >= currentSpriteState.currentFrame.milliseconds)
+                if (currentSpriteState.millisecondsOnFrame >= currentSpriteState.currentFrame.milliseconds)
                 {
                     currentSpriteState.NextFrame();
                 }
@@ -132,9 +132,9 @@ namespace AshTech.Core
         }
 
         public void Draw(SpriteBatch spriteBatch, Vector2 position, Color color, float rotation, Vector2 origin, SpriteEffects spriteEffect, float depth)
-        {            
-            if(currentSpriteState != null)
-                spriteSheet.Draw(spriteBatch, currentSpriteState.currentFrame.frame,  position, color, rotation, origin, spriteEffect, depth);
+        {
+            if (currentSpriteState != null)
+                spriteSheet.Draw(spriteBatch, currentSpriteState.currentFrame.frame, position, color, rotation, origin, spriteEffect, depth);
         }
 
         public void Draw(SpriteBatch spriteBatch, Rectangle rectangle, Color color, float rotation, Vector2 origin, SpriteEffects spriteEffect, float depth)

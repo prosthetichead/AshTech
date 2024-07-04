@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AshTech.Core
+namespace AshTech.Draw
 {
     public enum Alignment
     {
@@ -24,7 +24,7 @@ namespace AshTech.Core
         BottomCenter,
         BottomRight,
     }
-    
+
     public static class SpriteBatchExtensions
     {
         //Takes a rectable and draws a string inside the rectangle with the chosen alignment.
