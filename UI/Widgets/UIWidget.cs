@@ -48,7 +48,9 @@ namespace AshTech.UI.Widgets
         public string Name { get { return name; } }
         private string name;
         
-        //public SpriteBox backgroundSpriteBox;
+        public SpriteBox BackgroundSpriteBox { get { return backgroundSpriteBox; } }
+        private SpriteBox backgroundSpriteBox;
+        public bool drawBackgroundSpriteBox = false;
 
         public bool MouseInBounds { get { return Visible ? mouseInBounds : false; } }
         private bool mouseInBounds;
@@ -73,6 +75,12 @@ namespace AshTech.UI.Widgets
             MouseEnteredBounds += (obj, args) => { Debug.Console.WriteLine("Mouse Entered Bounds of UI Widget " + name); };
             MouseExitedBounds += (obj, args) => { Debug.Console.WriteLine("Mouse Exited Bounds of UI Widget " + name); };
 
+        }
+
+        public void SetBackground(Texture2D backgroundTexture, int spriteSize)
+        {
+            backgroundSpriteBox = new SpriteBox(backgroundTexture, spriteSize, bounds);
+            drawBackgroundSpriteBox = true;
         }
 
         internal void ConnectDesktop(Desktop desktop)

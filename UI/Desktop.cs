@@ -160,7 +160,7 @@ namespace AshTech.UI
                     backgroundSpriteBox.Draw(spriteBatch);
                 }
 
-                foreach (UIWidget widget in widgets.Values.OrderBy(x=>x.drawOrder) )
+                foreach (UIWidget widget in widgets.Values.Where(w=>w.Visible).OrderBy(x=>x.drawOrder) )
                 {
                     widget.Draw(spriteBatch);
                 }
