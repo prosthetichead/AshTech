@@ -31,6 +31,7 @@ namespace AshTech.UI.Widgets
         
         public SpriteFontBase Font { get {  return font; } set { font = value; } }
         private SpriteFontBase font;
+        public Color[] fontColor = { Color.Black };
 
         public Alignment TextAlignment { get { return textAlignment; } set { textAlignment = value; } }
         private Alignment textAlignment;        
@@ -80,6 +81,11 @@ namespace AshTech.UI.Widgets
         public void SetBackground(Texture2D backgroundTexture, int spriteSize)
         {
             backgroundSpriteBox = new SpriteBox(backgroundTexture, spriteSize, bounds);
+            drawBackgroundSpriteBox = true;
+        }
+        public void SetBackground(SpriteBox spriteBox)
+        {
+            backgroundSpriteBox = spriteBox;
             drawBackgroundSpriteBox = true;
         }
 

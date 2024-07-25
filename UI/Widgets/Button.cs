@@ -13,7 +13,7 @@ namespace AshTech.UI.Widgets
 {
     public class Button : UIWidget
     {
-        public Color[] textColor = { Color.Black };
+        
         public string value;
 
 
@@ -24,8 +24,8 @@ namespace AshTech.UI.Widgets
             TextAlignment = Alignment.CenterCenter;
 
             Texture2D defaultButtonTexture = AssetManager.LoadTexture2D("ui/button.png", "ashtech.zip", "ui-default-button-texture");
-            drawBackgroundSpriteBox = true;
-            SetBackground(defaultButtonTexture, 16);
+            SpriteSheet spriteSheet = new SpriteSheet(144, 46, defaultButtonTexture);
+            SpriteBox backgroundSpriteBox = new SpriteBox(spriteSheet, )
         }
 
         internal override void Update(GameTime gameTime)
@@ -40,7 +40,7 @@ namespace AshTech.UI.Widgets
                 BackgroundSpriteBox.Draw(spriteBatch);
 
                 Rectangle drawPos = DesktopBounds;
-                spriteBatch.DrawString(Font, value, rectangle: drawPos, TextAlignment, textColor);
+                spriteBatch.DrawString(Font, value, rectangle: drawPos, TextAlignment, fontColor);
                 
             }
         }

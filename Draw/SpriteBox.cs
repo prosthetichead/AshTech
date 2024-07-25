@@ -11,7 +11,8 @@ namespace AshTech.Draw
     public class SpriteBox
     {
         private SpriteSheet boxSpriteSheet;
-        public Rectangle bounds;
+        public Rectangle box;
+        public Color color = Color.Red;
 
         public int topLeftSpriteIndex;
         public int topRightSpriteIndex;
@@ -23,9 +24,9 @@ namespace AshTech.Draw
         public int bottomRightSpriteIndex;
         public int bottomCenterSpriteIndex;
 
-        public SpriteBox(Texture2D boxTexture, int spriteSize, Rectangle bounds)
+        public SpriteBox(Texture2D boxTexture, int spriteSize, Rectangle box)
         {
-            this.bounds = bounds;
+            this.box = box;
 
             boxSpriteSheet = new SpriteSheet(spriteSize, spriteSize, boxTexture);
 
@@ -40,11 +41,11 @@ namespace AshTech.Draw
             bottomRightSpriteIndex = 8;
         }
 
-        public SpriteBox(SpriteSheet boxSpriteSheet, Rectangle bounds, int topLeftSpriteIndex = 0, int topCenterSpriteIndex = 1,
+        public SpriteBox(SpriteSheet boxSpriteSheet, int topLeftSpriteIndex = 0, int topCenterSpriteIndex = 1,
                                   int topRightSpriteIndex = 2, int centerLeftSpriteIndex = 3, int centerSpriteIndex = 4,
                                   int centerRightSpriteIndex = 5, int bottomLeftSpriteIndex = 6, int bottomCenterSpriteIndex = 7, int bottomRightSpriteIndex = 8)
         {
-            this.bounds = bounds;
+            this.box = new Rectangle(0,0,100,100);
             this.boxSpriteSheet = boxSpriteSheet;
             this.topLeftSpriteIndex = topLeftSpriteIndex;
             this.topCenterSpriteIndex = topCenterSpriteIndex;
@@ -60,31 +61,31 @@ namespace AshTech.Draw
         public void Draw(SpriteBatch spriteBatch)
         {
             //top left corner
-            boxSpriteSheet.Draw(spriteBatch, topLeftSpriteIndex, new Vector2(bounds.X, bounds.Y), Color.White, 0f, new Vector2(0, 0), SpriteEffects.None, 0f);
+            boxSpriteSheet.Draw(spriteBatch, topLeftSpriteIndex, new Vector2(box.X, box.Y), color, 0f, new Vector2(0, 0), SpriteEffects.None, 0f);
 
             //top
-            boxSpriteSheet.Draw(spriteBatch, topCenterSpriteIndex, new Rectangle(bounds.X + boxSpriteSheet.SpriteWidth, bounds.Y, bounds.Width - (boxSpriteSheet.SpriteWidth*2), boxSpriteSheet.SpriteHeight), Color.White, 0f, new Vector2(0, 0), SpriteEffects.None, 0f);
+            boxSpriteSheet.Draw(spriteBatch, topCenterSpriteIndex, new Rectangle(box.X + boxSpriteSheet.SpriteWidth, box.Y, box.Width - (boxSpriteSheet.SpriteWidth*2), boxSpriteSheet.SpriteHeight), color, 0f, new Vector2(0, 0), SpriteEffects.None, 0f);
 
             // top right corner                
-            boxSpriteSheet.Draw(spriteBatch, topRightSpriteIndex, new Vector2(bounds.X + bounds.Width, bounds.Y), Color.White, 0f, new Vector2(boxSpriteSheet.SpriteWidth, 0), SpriteEffects.None, 0f);
+            boxSpriteSheet.Draw(spriteBatch, topRightSpriteIndex, new Vector2(box.X + box.Width, box.Y), color, 0f, new Vector2(boxSpriteSheet.SpriteWidth, 0), SpriteEffects.None, 0f);
 
             //left 
-            boxSpriteSheet.Draw(spriteBatch, centerLeftSpriteIndex, new Rectangle(bounds.X, bounds.Y + boxSpriteSheet.SpriteHeight, boxSpriteSheet.SpriteWidth, bounds.Height - (boxSpriteSheet.SpriteHeight * 2)), Color.White, 0f, new Vector2(0, 0), SpriteEffects.None, 0f);
+            boxSpriteSheet.Draw(spriteBatch, centerLeftSpriteIndex, new Rectangle(box.X, box.Y + boxSpriteSheet.SpriteHeight, boxSpriteSheet.SpriteWidth, box.Height - (boxSpriteSheet.SpriteHeight * 2)), color, 0f, new Vector2(0, 0), SpriteEffects.None, 0f);
 
             //Center 
-            boxSpriteSheet.Draw(spriteBatch, centerSpriteIndex, new Rectangle(bounds.X + boxSpriteSheet.SpriteWidth, bounds.Y + boxSpriteSheet.SpriteHeight, bounds.Width - (boxSpriteSheet.SpriteWidth * 2), bounds.Height - (boxSpriteSheet.SpriteHeight * 2)), Color.White, 0f, new Vector2(0, 0), SpriteEffects.None, 0f);
+            boxSpriteSheet.Draw(spriteBatch, centerSpriteIndex, new Rectangle(box.X + boxSpriteSheet.SpriteWidth, box.Y + boxSpriteSheet.SpriteHeight, box.Width - (boxSpriteSheet.SpriteWidth * 2), box.Height - (boxSpriteSheet.SpriteHeight * 2)), color, 0f, new Vector2(0, 0), SpriteEffects.None, 0f);
 
             //right
-            boxSpriteSheet.Draw(spriteBatch, centerRightSpriteIndex, new Rectangle(bounds.X + bounds.Width, bounds.Y + boxSpriteSheet.SpriteHeight, boxSpriteSheet.SpriteWidth, bounds.Height - (boxSpriteSheet.SpriteHeight * 2)), Color.White, 0f, new Vector2(boxSpriteSheet.SpriteWidth, 0), SpriteEffects.None, 0f);
+            boxSpriteSheet.Draw(spriteBatch, centerRightSpriteIndex, new Rectangle(box.X + box.Width, box.Y + boxSpriteSheet.SpriteHeight, boxSpriteSheet.SpriteWidth, box.Height - (boxSpriteSheet.SpriteHeight * 2)), color, 0f, new Vector2(boxSpriteSheet.SpriteWidth, 0), SpriteEffects.None, 0f);
 
             //bottom left corner
-            boxSpriteSheet.Draw(spriteBatch, bottomLeftSpriteIndex, new Vector2(bounds.X, bounds.Y + bounds.Height), Color.White, 0f, new Vector2(0, boxSpriteSheet.SpriteHeight), SpriteEffects.None, 0f);
+            boxSpriteSheet.Draw(spriteBatch, bottomLeftSpriteIndex, new Vector2(box.X, box.Y + box.Height), color, 0f, new Vector2(0, boxSpriteSheet.SpriteHeight), SpriteEffects.None, 0f);
 
             //bottom
-            boxSpriteSheet.Draw(spriteBatch, bottomCenterSpriteIndex, new Rectangle(bounds.X + boxSpriteSheet.SpriteWidth, bounds.Y + bounds.Height, bounds.Width - (boxSpriteSheet.SpriteWidth * 2), boxSpriteSheet.SpriteHeight), Color.White, 0f, new Vector2(0, boxSpriteSheet.SpriteHeight), SpriteEffects.None, 0f);
+            boxSpriteSheet.Draw(spriteBatch, bottomCenterSpriteIndex, new Rectangle(box.X + boxSpriteSheet.SpriteWidth, box.Y + box.Height, box.Width - (boxSpriteSheet.SpriteWidth * 2), boxSpriteSheet.SpriteHeight), color, 0f, new Vector2(0, boxSpriteSheet.SpriteHeight), SpriteEffects.None, 0f);
 
             //bottom right corner
-            boxSpriteSheet.Draw(spriteBatch, bottomRightSpriteIndex, new Vector2(bounds.X + bounds.Width, bounds.Y + bounds.Height), Color.White, 0f, new Vector2(boxSpriteSheet.SpriteWidth, boxSpriteSheet.SpriteHeight), SpriteEffects.None, 0f);
+            boxSpriteSheet.Draw(spriteBatch, bottomRightSpriteIndex, new Vector2(box.X + box.Width, box.Y + box.Height), color, 0f, new Vector2(boxSpriteSheet.SpriteWidth, boxSpriteSheet.SpriteHeight), SpriteEffects.None, 0f);
 
         }
     }
