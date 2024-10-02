@@ -19,8 +19,7 @@ namespace AshTech.UI.Widgets
         public Alignment alignment;
 
         public int textPadding = 10;
-
-        
+                
         public int cursorFlashSpeed = 350;
         public char cursor = '|';
         public string preText = ">";
@@ -29,13 +28,12 @@ namespace AshTech.UI.Widgets
         private float timeSinceCursorFlash = 0;
         private bool drawCursor = true;
 
-
         public string value { get { return _value; } set { _value = value; ValueChanaged?.Invoke(this, EventArgs.Empty); }  }
         private string _value = "";
 
         public event EventHandler ValueChanaged;
         public event EventHandler PressedEnter;
-                
+        public event EventHandler PressedUp;
 
         public TextInput(string name, Rectangle bounds, DesktopAnchor anchor) : base(name, bounds, anchor)
         {
@@ -62,6 +60,10 @@ namespace AshTech.UI.Widgets
                     {
                         PressedEnter?.Invoke(this, EventArgs.Empty);
                     }
+                }
+                else if (key == Keys.Up)
+                {
+                    PressedUp?.Invoke(this, EventArgs.Empty);
                 }
                 else
                 {
