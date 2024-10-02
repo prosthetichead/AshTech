@@ -25,7 +25,7 @@ namespace AshTech.UI.Widgets
 
             Texture2D defaultButtonTexture = AssetManager.LoadTexture2D("ui/button.png", "ashtech.zip", "ui-default-button-texture");
             SpriteSheet spriteSheet = new SpriteSheet(144, 46, defaultButtonTexture);
-            SpriteBox backgroundSpriteBox = new SpriteBox(spriteSheet, )
+            //SpriteBox backgroundSpriteBox = new SpriteBox(spriteSheet, )
         }
 
         internal override void Update(GameTime gameTime)
@@ -37,7 +37,7 @@ namespace AshTech.UI.Widgets
         {
             if (Visible)
             {
-                BackgroundSpriteBox.Draw(spriteBatch);
+           //     BackgroundSpriteBox.Draw(spriteBatch);
 
                 Rectangle drawPos = DesktopBounds;
                 spriteBatch.DrawString(Font, value, rectangle: drawPos, TextAlignment, fontColor);

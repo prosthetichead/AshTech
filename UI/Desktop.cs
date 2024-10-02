@@ -1,6 +1,7 @@
 ﻿using AshTech.Core;
 using AshTech.Draw;
 using AshTech.UI.Widgets;
+using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -18,14 +19,13 @@ namespace AshTech.UI
     /// </summary>
     public class Desktop
     {
-        public Rectangle bounds = new Rectangle();
+        private Rectangle bounds = new Rectangle();
         private SortedDictionary<string,UIWidget> widgets;
         public Game game { get { return _game; } }
         private Game _game;
         private bool _focus = true;
 
         private SpriteBox backgroundSpriteBox;
-        //public SpriteBox BackgroundSpriteBox { get { return backgroundSpriteBox; } set { backgroundSpriteBox = value; } }
         public bool drawBackgroundSpriteBox = false;
 
         public bool visible = true;
@@ -48,7 +48,16 @@ namespace AshTech.UI
             } 
         }
         
-        
+        public Rectangle Bounds
+        {
+            get { return bounds; }
+            set
+            {
+                bounds = value;
+                if (backgroundSpriteBox != null)
+                    backgroundSpriteBox.bounds = bounds;
+            }
+        }
 
         public Desktop(Rectangle bounds, Game game)
         {
@@ -68,7 +77,7 @@ namespace AshTech.UI
                                   int centerLeftSpriteIndex = 3, int centerSpriteIndex = 4, int centerRightSpriteIndex = 5,
                                   int bottomLeftSpriteIndex = 6, int bottomCenterSpriteIndex = 7, int bottomRightSpriteIndex = 8)
         {
-            backgroundSpriteBox = new SpriteBox(spriteSheet,bounds, topLeftSpriteIndex, topCenterSpriteIndex, topRightSpriteIndex, centerLeftSpriteIndex, centerSpriteIndex,
+            backgroundSpriteBox = new SpriteBox(spriteSheet, bounds, topLeftSpriteIndex, topCenterSpriteIndex, topRightSpriteIndex, centerLeftSpriteIndex, centerSpriteIndex,
                                                 centerRightSpriteIndex, bottomLeftSpriteIndex, bottomCenterSpriteIndex, bottomRightSpriteIndex);
             drawBackgroundSpriteBox = true;
         }
@@ -156,7 +165,6 @@ namespace AshTech.UI
             {
                 if(drawBackgroundSpriteBox && backgroundSpriteBox != null)
                 {
-                    backgroundSpriteBox.bounds = bounds;
                     backgroundSpriteBox.Draw(spriteBatch);
                 }
 

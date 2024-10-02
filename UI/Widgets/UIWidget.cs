@@ -142,11 +142,11 @@ namespace AshTech.UI.Widgets
                 switch (anchor)
                 {
                     case DesktopAnchor.TopLeft:
-                        return new Rectangle(desktop.bounds.X + bounds.X, desktop.bounds.Y + bounds.Y, bounds.Width, bounds.Height);
+                        return new Rectangle(desktop.Bounds.X + bounds.X, desktop.Bounds.Y + bounds.Y, bounds.Width, bounds.Height);
                     case DesktopAnchor.TopRight:
-                        return new Rectangle((desktop.bounds.X + desktop.bounds.Width) - bounds.Width - bounds.X, desktop.bounds.Y + bounds.Y, bounds.Width, bounds.Height);
+                        return new Rectangle((desktop.Bounds.X + desktop.Bounds.Width) - bounds.Width - bounds.X, desktop.Bounds.Y + bounds.Y, bounds.Width, bounds.Height);
                     case DesktopAnchor.BottomLeft:
-                        return new Rectangle(desktop.bounds.X + bounds.X, (desktop.bounds.Y + desktop.bounds.Height) - bounds.Height - bounds.Y, bounds.Width, bounds.Height);
+                        return new Rectangle(desktop.Bounds.X + bounds.X, (desktop.Bounds.Y + desktop.Bounds.Height) - bounds.Height - bounds.Y, bounds.Width, bounds.Height);
                     case DesktopAnchor.BottomRight:
                         break;
                     case DesktopAnchor.BottomTop:

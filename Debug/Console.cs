@@ -138,8 +138,6 @@ namespace AshTech.Debug
 
         private static Rectangle PositionSize = new Rectangle(5, 0, 900, 350);
 
-        //private static Rectangle consoleRectangle = new Rectangle(0, 0, 0, 0);
-
         internal static void Setup(Game game)
         {
             Console.game = game;
@@ -208,7 +206,7 @@ namespace AshTech.Debug
             //add widgets to desktop
             desktop.SetBackground(consoleSpriteSheet);
 
-            desktop.bounds = PositionSize;
+            desktop.Bounds = PositionSize;
             consoleInput = new TextInput("debugTextBox", new Rectangle(10, 0, 200, 18), DesktopAnchor.BottomLeft);
             desktop.AddWidget(consoleInput);
             consoleInput.PressedEnter += TextInput_PressedEnter;
@@ -234,7 +232,7 @@ namespace AshTech.Debug
             PositionSize.Width = game.GraphicsDevice.Viewport.Width - 10;
             PositionSize.Height = (int)(game.GraphicsDevice.Viewport.Height * .4f);
 
-            desktop.bounds = PositionSize;
+            desktop.Bounds = PositionSize;
         }
 
         public static void AddConsoleCommand(ConsoleCommand consoleCommand)
@@ -284,45 +282,45 @@ namespace AshTech.Debug
 
         internal static void Update(GameTime gameTime)
         {
+            Rectangle consoleRectangle = desktop.Bounds;
+            int hiddenY = 0 - (PositionSize.Height + 10);
+
             if (startAnimating)
             {
-                desktop.bounds = PositionSize;
+                consoleRectangle = PositionSize;
                 desktop.Focus = false;
-                if (consoleState == ConsoleState.opening)
-                {
-                    desktop.bounds.Y = 0 - (PositionSize.Height+10) ;
-                }
-                startAnimating = false;                
+                consoleRectangle.Y = consoleState == ConsoleState.opening ? hiddenY : PositionSize.Y;
+                startAnimating = false;
                 consoleInput.value = "";
             }
-             
-            if (consoleState == ConsoleState.opening)
-            {
-                //slide in the console till its the same position as PositionSize
-                desktop.bounds.Y += animationSpeed;
-                if (desktop.bounds.Y > PositionSize.Y)
-                {
-                    consoleState = ConsoleState.open;
-                    desktop.bounds.Y = PositionSize.Y;
 
-                    desktop.FocusWidget("debugTextBox");
-                }
-            }
-            else if (consoleState == ConsoleState.closing)
+            switch (consoleState)
             {
-                desktop.bounds.Y -= animationSpeed;
-                if (desktop.bounds.Y <= 0 - (PositionSize.Height + 10))
-                {
-                    consoleState = ConsoleState.closed;
-                    desktop.bounds.Y = 0 - (PositionSize.Height + 10);
-                    desktop.Focus = false;
-                }
+                case ConsoleState.opening:
+                    consoleRectangle.Y = Math.Min(PositionSize.Y, consoleRectangle.Y + animationSpeed);
+                    if (consoleRectangle.Y == PositionSize.Y)
+                    {
+                        consoleState = ConsoleState.open;
+                        desktop.FocusWidget("debugTextBox");
+                    }
+                    break;
+
+                case ConsoleState.closing:
+                    consoleRectangle.Y = Math.Max(hiddenY, consoleRectangle.Y - animationSpeed);
+                    if (consoleRectangle.Y == hiddenY)
+                    {
+                        consoleState = ConsoleState.closed;
+                        desktop.Focus = false;
+                    }
+                    break;
+
+                case ConsoleState.open:
+                    consoleRectangle = PositionSize;
+                    desktop.Update(gameTime);
+                    break;
             }
-            else if(consoleState == ConsoleState.open)
-            {
-                desktop.bounds = PositionSize;
-                desktop.Update(gameTime);
-            }            
+
+            desktop.Bounds = consoleRectangle;
         }
 
         internal static void HandleInput(GameTime gameTime, InputManager input)
@@ -336,7 +334,7 @@ namespace AshTech.Debug
             if (displayConsole)
             {
                 desktop.visible = true;
-                Rectangle consoleRectangle = desktop.bounds;
+                Rectangle consoleRectangle = desktop.Bounds;
 
                 if (lineHeight == 0)
                 {
