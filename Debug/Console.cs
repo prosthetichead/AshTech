@@ -205,8 +205,8 @@ namespace AshTech.Debug
 
             //add widgets to desktop
             desktop.SetBackground(consoleSpriteSheet);
-
             desktop.Bounds = PositionSize;
+
             consoleInput = new TextInput("debugTextBox", new Rectangle(10, 0, 200, 18), DesktopAnchor.BottomLeft);
             desktop.AddWidget(consoleInput);
             consoleInput.PressedEnter += TextInput_PressedEnter;
@@ -216,9 +216,9 @@ namespace AshTech.Debug
         {
             if (textInput)
             {
-                UI.Widgets.TextInput textInput = (UI.Widgets.TextInput)sender;
-
+                TextInput textInput = (TextInput)sender;
                 string commandString = textInput.value;
+
                 previousCommandIndex = -1;
                 WriteLine(ConsoleLineType.command, ">" + commandString);
                 ExecuteCommandString(commandString);
