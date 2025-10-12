@@ -34,6 +34,7 @@ namespace AshTech.Debug
     public enum ConsoleLineType
     {
         normal,
+        highlight,
         warning,
         error,
         command
@@ -72,8 +73,10 @@ namespace AshTech.Debug
                 {
                     switch (lineType)
                     {
-                        case ConsoleLineType.normal:
-                            return Color.LightGray;
+                        //case ConsoleLineType.normal:
+                        //    return Color.White;
+                        case ConsoleLineType.highlight:
+                            return Color.Cyan;
                         case ConsoleLineType.warning:
                             return Color.Yellow;
                         case ConsoleLineType.error:
@@ -81,7 +84,7 @@ namespace AshTech.Debug
                         case ConsoleLineType.command:
                             return Color.LimeGreen;
                         default:
-                            return Color.LightGray;
+                            return Color.White;
                     }
                 }
             }
@@ -142,9 +145,9 @@ namespace AshTech.Debug
         {
             Console.game = game;
 
-            ConsoleLine consoleLine = new ConsoleLine() { lineType = ConsoleLineType.normal, lineText = "The AshTechEngine Console <(^.^)>" };
+            ConsoleLine consoleLine = new ConsoleLine() { lineType = ConsoleLineType.highlight, lineText = "-- AshTech Console --" };
             consoleLines.Add(consoleLine);
-            consoleLine = new ConsoleLine() { lineType = ConsoleLineType.normal, lineText = "== enter ? for list of avalable commands ==" };
+            consoleLine = new ConsoleLine() { lineType = ConsoleLineType.normal, lineText = "enter ? for list of avalable commands" };
             consoleLines.Add(consoleLine);
 
             //setup ui desktop
