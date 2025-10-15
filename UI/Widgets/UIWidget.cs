@@ -64,7 +64,9 @@ namespace AshTech.UI.Widgets
 
         public UIWidget(string name, Rectangle bounds, DesktopAnchor anchor)
         {
-            font = AssetManager.LoadFontSystem("fonts/m6x11.ttf", "ashtech.zip", assetKey: "ashtech-console-font").GetFont(12);
+            //TODO: this needs to be fixed and not just set by the component itself.
+            font = AssetManager.GetFontSystem("ashtech/fonts/m6x11.ttf").GetFont(12);
+            
             textAlignment = Alignment.CenterLeft;
 
             this.bounds = bounds;

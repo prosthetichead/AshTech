@@ -86,11 +86,16 @@ namespace AshTech.Core
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             //load the engine assets
+            AssetManager.LoadAssetPack("ashtech.zip", "ashtech");
+
+            //setup console assets
             Console.LoadContent();
+
+            //setup action for console
             Input.AddAction(new InputAction("AshTechConsoleToggle", "Debug Console", new Keys[] { Keys.OemTilde }) { hiddenAction = true });
 
             //load the font to write engine info using
-            font = AssetManager.LoadFontSystem("fonts/m6x11.ttf", "ashtech.zip", "ashtech-default-font").GetFont(16);
+            font = AssetManager.GetFontSystem("ashtech/fonts/m6x11.ttf").GetFont(16);
 
             //setup Console Commands
             Console.AddConsoleCommand(new ConsoleCommand("scenes", "List scenes and details about each scene", "", a =>

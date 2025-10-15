@@ -23,8 +23,8 @@ namespace AshTech.UI.Widgets
         {
             TextAlignment = Alignment.CenterCenter;
 
-            Texture2D defaultButtonTexture = AssetManager.LoadTexture2D("ui/button.png", "ashtech.zip", "ui-default-button-texture");
-            SpriteSheet spriteSheet = new SpriteSheet(144, 46, defaultButtonTexture);
+            //Texture2D defaultButtonTexture = AssetManager.LoadTexture2D("ui/button.png", "ashtech.zip", "ui-default-button-texture");
+            //SpriteSheet spriteSheet = new SpriteSheet(144, 46, defaultButtonTexture);
             //SpriteBox backgroundSpriteBox = new SpriteBox(spriteSheet, )
         }
 
@@ -40,7 +40,7 @@ namespace AshTech.UI.Widgets
            //     BackgroundSpriteBox.Draw(spriteBatch);
 
                 Rectangle drawPos = DesktopBounds;
-                spriteBatch.DrawString(Font, value, rectangle: drawPos, TextAlignment, fontColor);
+                //spriteBatch.DrawString(Font, value, rectangle: drawPos, TextAlignment, fontColor);
                 
             }
         }
