@@ -73,61 +73,69 @@ namespace AshTech.Core
 
         public static void LoadAssetPack(string zipPath, string packName, FontSystemSettings fontSystemSettings = null )
         {
-            using (ZipArchive archive = ZipFile.OpenRead(zipPath))
+            try
             {
-                foreach (ZipArchiveEntry entry in archive.Entries)
+                using (ZipArchive archive = ZipFile.OpenRead(zipPath))
                 {
-                    if (entry.Length == 0) continue; // Skip directories
-
-
-                    string key = $"{packName}/{entry.FullName}";
-                    string ext = Path.GetExtension(key).ToLower();
-
-                    try 
+                    foreach (ZipArchiveEntry entry in archive.Entries)
                     {
-                        switch(ext)
+                        if (entry.Length == 0) continue; // Skip directories
+
+
+                        string key = $"{packName}/{entry.FullName}";
+                        string ext = Path.GetExtension(key).ToLower();
+
+                        try
                         {
-                            case ".png":
-                            case ".jpg":
-                            case ".jpeg":
-                            case ".bmp":
-                                using(Stream stream = entry.Open())
-                                {
-                                    textures[key] = Texture2D.FromStream(game.GraphicsDevice, stream);
-                                }
-                                break;
+                            switch (ext)
+                            {
+                                case ".png":
+                                case ".jpg":
+                                case ".jpeg":
+                                case ".bmp":
+                                    using (Stream stream = entry.Open())
+                                    {
+                                        textures[key] = Texture2D.FromStream(game.GraphicsDevice, stream);
+                                    }
+                                    break;
 
-                            case ".ttf":
-                            case ".otf":
-                                using(Stream stream = entry.Open())
-                                {
-                                    // Use provided settings or default constructor
-                                    FontSystem fontSystem = fontSystemSettings != null
-                                        ? new FontSystem(fontSystemSettings)
-                                        : new FontSystem();
+                                case ".ttf":
+                                case ".otf":
+                                    using (Stream stream = entry.Open())
+                                    {
+                                        // Use provided settings or default constructor
+                                        FontSystem fontSystem = fontSystemSettings != null
+                                            ? new FontSystem(fontSystemSettings)
+                                            : new FontSystem();
 
-                                    fontSystem.AddFont(stream);
-                                    fonts[key] = fontSystem;
-                                }
-                                break;
+                                        fontSystem.AddFont(stream);
+                                        fonts[key] = fontSystem;
+                                    }
+                                    break;
 
-                            case ".txt":
-                            case ".json":
-                                using (var stream = entry.Open())
-                                using (var reader = new StreamReader(stream))
-                                {
-                                    strings[entry.FullName] = reader.ReadToEnd();
-                                }
-                                break;
+                                case ".txt":
+                                case ".json":
+                                    using (var stream = entry.Open())
+                                    using (var reader = new StreamReader(stream))
+                                    {
+                                        strings[entry.FullName] = reader.ReadToEnd();
+                                    }
+                                    break;
+                            }
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Failed to load {key}: {ex.Message}");                        
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Failed to load {key}: {ex.Message}");
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to load asset pack {zipPath}: {ex.Message}");
+            }            
         }
+
         public static Texture2D GetTexture(string key) =>
             textures.ContainsKey(key) ? textures[key] : null;
 

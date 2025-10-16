@@ -33,7 +33,7 @@ namespace AshTech.Core
         public abstract void LoadContent();
         public abstract void UnloadContent();
         public abstract void Update(GameTime gameTime, bool sceneHasFocus);
-        public abstract void HandleInput(GameTime gameTime, bool sceneHasFocus, InputManager input);
+        public abstract void HandleInput(GameTime gameTime, bool sceneHasFocus);
         public abstract void Draw(GameTime gameTime, bool sceneHasFocus);
 
     }

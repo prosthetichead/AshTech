@@ -126,7 +126,7 @@ namespace AshTech.Core
             Input.Update();
 
             //update the console
-            Console.Update(gameTime);                        
+            Console.Update(gameTime);
             //check if the conosle button is pressed
             if (Input.IsActionTriggered("AshTechConsoleToggle"))
             {
@@ -138,7 +138,7 @@ namespace AshTech.Core
                 //scene has focus if the game window has focus and console isnt open
                 bool sceneHasFocus = Game.IsActive == true && Console.displayConsole == false;
                 _activeScene.Update(gameTime, sceneHasFocus);
-                _activeScene.HandleInput(gameTime, sceneHasFocus, Input);
+                _activeScene.HandleInput(gameTime, sceneHasFocus);
             }            
         }
 
@@ -157,9 +157,9 @@ namespace AshTech.Core
             else
             {
                 //no scenes display a message 
-                GraphicsDevice.Clear(Color.Black);
+                GraphicsDevice.Clear(Color.MonoGameOrange);
                 SpriteBatch.Begin();
-                SpriteBatch.DrawString(font, "Error no active scene.\nPress ~ to open the Console", new Vector2(30, 30), colors: new Color[] { Color.MonoGameOrange });
+                SpriteBatch.DrawString(font, "Error no active scene.\nPress ~ to open the Console", new Vector2(30, 30), colors: [ Color.White ]);
                 SpriteBatch.End();  
             }
 
