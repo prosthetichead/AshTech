@@ -37,7 +37,7 @@ namespace AshTech.Core
 
             Console.AddConsoleCommand(new ConsoleCommand("assets",
                 "List asset keys for the provided asset type (textures, fonts, strings)",
-                "Displays a list of all keys for assets currently in memmery. [assets [textures|fonts|strings]]", a =>
+                "Displays a list of all keys for assets currently in memmery. [assets [tex|fnt|str]]", a =>
             {                
                 string assetType = "";
                 if (a!=null && a.Count() > 0)
@@ -48,17 +48,18 @@ namespace AshTech.Core
 
                 switch (assetType)
                 {
-                    case "textures":
+                    case "tex":
                         assetKeys = textures.Keys.ToList();
                         break;
-                    case "fonts":
+                    case "fnt":
                         assetKeys = fonts.Keys.ToList();
                         break;
-                    case "strings":
+                    case "str":
                         assetKeys = strings.Keys.ToList();
                         break;
                     default:
-                        assetKeys = new string[]{ "Please Provide a Asset Type Parameter", "assets textures", "assets fonts", "assets strings"}.ToList();
+                        Console.WriteLine(ConsoleLineType.warning, "Please Provide a Asset Type Parameter [assets [tex|fnt|str]]");
+                        assetKeys = new List<string>();
                         break;
                 }
 

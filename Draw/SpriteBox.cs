@@ -12,7 +12,7 @@ namespace AshTech.Draw
     {
         private SpriteSheet boxSpriteSheet;
         public Rectangle bounds;
-        public Color color = Color.Red;
+        public Color color = Color.White;
 
         public int topLeftSpriteIndex;
         public int topRightSpriteIndex;

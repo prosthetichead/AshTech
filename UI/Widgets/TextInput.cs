@@ -10,13 +10,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace AshTech.UI.Widgets
 {
     public class TextInput : UIWidget
     {
        
-        public Alignment alignment;
+        public Alignment textAlignment;
+
+        public SpriteFontBase font;
+        public Color[] fontColor = { Color.Black };
 
         public int textPadding = 10;
                 
@@ -35,9 +39,9 @@ namespace AshTech.UI.Widgets
         public event EventHandler PressedEnter;
         public event EventHandler PressedUp;
 
-        public TextInput(string name, Rectangle bounds, DesktopAnchor anchor) : base(name, bounds, anchor)
+        public TextInput(string name, Rectangle bounds, DesktopAnchor anchor, string fontAssetId, int fontSize) : base(name, bounds, anchor)
         {
-                       
+            font = AssetManager.GetFontSystem(fontAssetId).GetFont(fontSize);            
         }
 
         private void Window_TextInput(object sender, TextInputEventArgs e)
@@ -101,7 +105,7 @@ namespace AshTech.UI.Widgets
             if (Visible)
             {
                 Rectangle drawPos = DesktopBounds;
-                spriteBatch.DrawString(Font, preText + value + (drawCursor ? cursor : "") + postText, rectangle: drawPos, alignment, new Color[] { Color.LimeGreen });           
+                spriteBatch.DrawString(font, preText + value + (drawCursor ? cursor : "") + postText, rectangle: drawPos, textAlignment, fontColor);           
             }
         }
     }

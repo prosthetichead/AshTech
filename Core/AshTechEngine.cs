@@ -92,7 +92,9 @@ namespace AshTech.Core
             Console.LoadContent();
 
             //setup action for console
-            Input.AddAction(new InputAction("AshTechConsoleToggle", "Debug Console", new Keys[] { Keys.OemTilde }) { hiddenAction = true });
+            Input.AddAction(new InputAction("AshTechConsoleToggle", "Show Debug Console", [Keys.OemTilde]) { hiddenAction = true });
+            Input.AddAction(new InputAction("AshTechConsolePreviousCmd", "Debug Console Previous Command", [Keys.Up]) { hiddenAction = true });
+
 
             //load the font to write engine info using
             font = AssetManager.GetFontSystem("ashtech/fonts/m6x11.ttf").GetFont(16);
@@ -124,8 +126,7 @@ namespace AshTech.Core
             Input.Update();
 
             //update the console
-            Console.Update(gameTime);
-                        
+            Console.Update(gameTime);                        
             //check if the conosle button is pressed
             if (Input.IsActionTriggered("AshTechConsoleToggle"))
             {

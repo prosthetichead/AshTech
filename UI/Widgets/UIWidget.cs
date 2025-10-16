@@ -29,10 +29,9 @@ namespace AshTech.UI.Widgets
         protected Desktop desktop;
         protected Rectangle bounds;
         
-        public SpriteFontBase Font { get {  return font; } set { font = value; } }
-        private SpriteFontBase font;
-        public Color[] fontColor = { Color.Black };
-
+        //public SpriteFontBase Font { get {  return font; } set { font = value; } }
+        //private SpriteFontBase font;
+        //public Color[] fontColor = { Color.Black };
         public Alignment TextAlignment { get { return textAlignment; } set { textAlignment = value; } }
         private Alignment textAlignment;        
 
@@ -64,8 +63,7 @@ namespace AshTech.UI.Widgets
 
         public UIWidget(string name, Rectangle bounds, DesktopAnchor anchor)
         {
-            //TODO: this needs to be fixed and not just set by the component itself.
-            font = AssetManager.GetFontSystem("ashtech/fonts/m6x11.ttf").GetFont(12);
+            
             
             textAlignment = Alignment.CenterLeft;
 

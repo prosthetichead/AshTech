@@ -203,14 +203,15 @@ namespace AshTech.Debug
             consoleTexture = AssetManager.GetTexture("ashtech/console/console.png");
             consoleSpriteSheet = new SpriteSheet(16, 16, consoleTexture);
 
-            //font
+            //output font
             consoleFont = AssetManager.GetFontSystem("ashtech/fonts/m6x11.ttf").GetFont(12);
 
             //add widgets to desktop
             desktop.SetBackground(consoleSpriteSheet);
             desktop.Bounds = PositionSize;
 
-            consoleInput = new TextInput("debugTextBox", new Rectangle(10, 0, 200, 18), DesktopAnchor.BottomLeft);
+            consoleInput = new TextInput("debugTextBox", new Rectangle(10, 0, 200, 18), DesktopAnchor.BottomLeft, "ashtech/fonts/m6x11.ttf", 12);
+            consoleInput.fontColor = [Color.LimeGreen];
             desktop.AddWidget(consoleInput);
             consoleInput.PressedEnter += TextInput_PressedEnter;
         }
@@ -286,7 +287,7 @@ namespace AshTech.Debug
         internal static void Update(GameTime gameTime)
         {
             Rectangle consoleRectangle = desktop.Bounds;
-            int hiddenY = 0 - (PositionSize.Height + 10);
+            int hiddenY = 0 - (PositionSize.Height + 10);            
 
             if (startAnimating)
             {
@@ -356,7 +357,7 @@ namespace AshTech.Debug
                 for (int i = consoleLines.Count - 1; i >= 0 && i >= consoleLines.Count - 1 - numberOfLines; i--)
                 {  
                     var line = consoleLines[i];
-                    spriteBatch.DrawString(consoleFont, line.lineText, new Rectangle(consoleRectangle.X + textPadding, consoleRectangle.Y + lineHeight * lineCount, consoleRectangle.Width - textPadding * 2, lineHeight), Alignment.CenterLeft, new Color[] { line.lineColor });
+                    spriteBatch.DrawString(consoleFont, line.lineText, new Rectangle(consoleRectangle.X + textPadding, consoleRectangle.Y + lineHeight * lineCount, consoleRectangle.Width - textPadding * 2, lineHeight), Alignment.CenterLeft, [line.lineColor]);
                     lineCount--;
                 }                
 

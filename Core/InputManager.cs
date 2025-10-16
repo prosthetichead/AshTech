@@ -35,7 +35,15 @@ namespace AshTech.Core
 
             Console.AddConsoleCommand(new ConsoleCommand("inputs", "display inputs and actions", "", a =>
             {
-
+                foreach (var action in inputActions)
+                {
+                    Console.WriteLine(ConsoleLineType.highlight,$"{action.Value.actionName} ({action.Key}) " + (action.Value.hiddenAction ? "hidden" : "") );
+                    Console.WriteLine("Keys");
+                    foreach(var key in action.Value.keyboardKeys)
+                    {
+                        Console.WriteLine("");
+                    }
+                }
             }));
         }        
 
