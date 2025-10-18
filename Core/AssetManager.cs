@@ -136,14 +136,26 @@ namespace AshTech.Core
             }            
         }
 
-        public static Texture2D GetTexture(string key) =>
-            textures.ContainsKey(key) ? textures[key] : null;
+        public static Texture2D GetTexture(string key)
+        {
+            if (!textures.ContainsKey(key))
+                throw new KeyNotFoundException($"Texture with key '{key}' not found.");
+            return textures[key];
+        }
 
-        public static SpriteFontBase GetFont(string key, float size) =>
-            fonts.ContainsKey(key) ? fonts[key].GetFont(size) : null;
+        public static SpriteFontBase GetFont(string key, float size)
+        {
+            if (!fonts.ContainsKey(key))
+                throw new KeyNotFoundException($"Font with key '{key}' not found.");
+            return fonts[key].GetFont(size);
+        }
 
-        public static FontSystem GetFontSystem(string key) =>
-            fonts.ContainsKey(key) ? fonts[key] : null;
+        public static FontSystem GetFontSystem(string key)
+        {
+            if (!fonts.ContainsKey(key))
+                throw new KeyNotFoundException($"Font system with key '{key}' not found.");
+            return fonts[key];
+        }
 
 
         //    private static Stream LoadStream(string zipPath, string assetName)
