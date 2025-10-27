@@ -313,7 +313,7 @@ namespace AshTech.Core
                     Dictionary<string, InputAction> inputActionsLoad = JsonConvert.DeserializeObject<Dictionary<string, InputAction>>(actions);
                     foreach(KeyValuePair<string, InputAction> action in inputActionsLoad)
                     {
-                        inputActions.Add(action.Key, action.Value);
+                        AddAction(action.Value);
                     }
                     return true;
                 }
@@ -322,8 +322,10 @@ namespace AshTech.Core
                     return false;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+
+                Console.WriteLine(ConsoleLineType.error, $"error loading input file {fileName} :: {ex.Message}");
                 return false;
             }
 

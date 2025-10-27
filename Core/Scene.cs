@@ -30,6 +30,11 @@ namespace AshTech.Core
             ashTech.AddScene(sceneUniqueName, scene);
         }
 
+        public void ActiveScene(string sceneUniqueName)
+        {
+            ashTech.ActivateScene(sceneUniqueName);
+        }
+
         public abstract void LoadContent();
         public abstract void UnloadContent();
         public abstract void Update(GameTime gameTime, bool sceneHasFocus);
